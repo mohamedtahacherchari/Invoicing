@@ -1,0 +1,85 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "homepage": ".",
+  "dependencies": {
+    "@chakra-ui/icons": "^1.0.13",
+    "@chakra-ui/react": "^1.6.2",
+    "@date-io/date-fns": "^1.3.13",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/pickers": "^3.3.10",
+    "@mui/icons-material": "^5.10.14",
+    "@mui/joy": "5.0.0-alpha.68",
+    "@mui/material": "^5.11.10",
+    "@mui/x-data-grid": "^5.17.12",
+    "@mui/x-date-pickers": "5.0.19",
+    "@reduxjs/toolkit": "^1.9.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.21.1",
+    "chart.js": "^3.7.0",
+    "country-state-city": "^3.1.2",
+    "date-fns": "^2.29.3",
+    "dayjs": "1.11.7",
+    "framer-motion": "^4",
+    "jwt-decode": "^3.1.2",
+    "moment": "^2.29.1",
+    "notistack": "^3.0.1",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-chartjs-2": "^4.0.1",
+    "react-dom": "^18.2.0",
+    "react-feather": "^2.0.10",
+    "react-helmet": "^6.1.0",
+    "react-lottie": "^1.2.3",
+    "react-notification-badge": "^1.5.1",
+    "react-perfect-scrollbar": "^1.5.8",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "^5.0.1",
+    "react-scroll": "^1.8.9",
+    "react-scrollable-feed": "^1.3.1",
+    "react-select": "^5.7.0",
+    "react-to-print": "^2.14.7",
+    "react-toastify": "^9.1.3",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.2",
+    "scss": "^0.2.4",
+    "socket.io-client": "^4.5.4",
+    "tailwindcss": "^3.0.15",
+    "timeago.js": "^4.0.2",
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:5000"
+}
