@@ -73,7 +73,7 @@ console.log(user.avatar)
   const OnSubmitUpdateUser = () =>{
 
 		try {
-			axiosInstance.patch('/user/update', 
+			axios.patch('/user/update', 
 			{
 				firstName,
 				lastName,
@@ -132,7 +132,7 @@ console.log(user.avatar)
             formData.append('file', file)
 
             setLoading2(true)
-            const res = await axiosInstance.post('/api/upload_avatar', formData, {
+            const res = await axios.post('/api/upload_avatar', formData, {
                 headers: {'content-type': 'multipart/form-data', Authorization: token}
             })
 

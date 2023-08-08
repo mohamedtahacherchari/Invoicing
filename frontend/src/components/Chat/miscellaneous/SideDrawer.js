@@ -38,7 +38,9 @@ function SideDrawer() {
   const auth = useSelector(state => state.auth)
   const {user} = auth
   const token = useSelector(state => state.token)
-
+  const axiosInstance = axios.create({
+    baseURL : process.env.REACT_APP_SERVER_URL,
+  });
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);

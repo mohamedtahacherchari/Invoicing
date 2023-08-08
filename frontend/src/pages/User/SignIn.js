@@ -73,7 +73,7 @@ export default function SignIn() {
 
 		event.preventDefault();
 		try {
-		const res = await axiosInstance.post('/user/login', {email, password},
+		const res = await axios.post('/user/login', {email, password},
 		{
 			headers: {Authorization: token}
 		  }

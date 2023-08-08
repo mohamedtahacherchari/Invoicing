@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const UploadForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };

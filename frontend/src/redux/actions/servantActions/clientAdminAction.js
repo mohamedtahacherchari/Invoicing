@@ -4,7 +4,7 @@ const axiosInstance = axios.create({
     baseURL : process.env.REACT_APP_SERVER_URL,
   });
 export const fetchAllClientAdmin = async (token) => {
-    const res = await axiosInstance.get('/api/clientf/ClientAdmin', {
+    const res = await axios.get('/api/clientf/ClientAdmin', {
         headers: {Authorization: token}
     })
 

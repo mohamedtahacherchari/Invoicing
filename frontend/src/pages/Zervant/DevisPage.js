@@ -14,7 +14,9 @@ import './tab.css'
 
 const DevisPage = () => {
 const{id} =useParams()
-
+const axiosInstance = axios.create({
+  baseURL : process.env.REACT_APP_SERVER_URL,
+});
   const navigate =  useNavigate();
 
  

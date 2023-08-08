@@ -36,7 +36,9 @@ const countries = Country.getAllCountries();
 
 const MyProfile = () => {
 	const location = useLocation()
-
+	const axiosInstance = axios.create({
+		baseURL : process.env.REACT_APP_SERVER_URL,
+	  });
 	const pathName = location.pathname.split("/");
 
 	const dispatch = useDispatch()

@@ -87,7 +87,7 @@ const MyProfile2 = () => {
 		if(Password ==='' && Cf_Password === ''){
 			console.log("update data without pass")
 			try {
-				axiosInstance.patch('/user/update', 
+				axios.patch('/user/update', 
 				{
 					firstName,
 					lastName,
@@ -127,7 +127,7 @@ const MyProfile2 = () => {
 			if(!isLength(Password) && isMatch(Password, Cf_Password)){
 
 				try {
-					axiosInstance.post('/user/updatedata/', 
+					axios.post('/user/updatedata/', 
 					{	
 						firstName,
 						lastName,
@@ -212,7 +212,7 @@ const MyProfile2 = () => {
             formData.append('file', file)
 
             setLoading(true)
-            const res = await axiosInstance.post('/api/upload_avatar', formData, {
+            const res = await axios.post('/api/upload_avatar', formData, {
                 headers: {'content-type': 'multipart/form-data', Authorization: token}
             })
 
@@ -290,7 +290,7 @@ const MyProfile2 = () => {
 		const firstLogin = localStorage.getItem('firstLogin')
 		if(firstLogin){
 			const getToken = async () => {
-				const res = await axiosInstance.post('/user/refresh_token', null)
+				const res = await axios.post('/user/refresh_token', null)
 				dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
 			}
 			getToken()

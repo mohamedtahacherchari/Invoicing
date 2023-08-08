@@ -24,6 +24,9 @@ import UserListItem from "../userAvatar/UserListItem";
 import {useSelector} from 'react-redux'
 
 const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
+  const axiosInstance = axios.create({
+    baseURL : process.env.REACT_APP_SERVER_URL,
+  });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [search, setSearch] = useState("");

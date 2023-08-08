@@ -26,7 +26,7 @@ const axiosInstance = axios.create({
 
 
       export const fetchAllClientf = async (token) => {
-        const res = await axiosInstance.get('/api/clientf/', {
+        const res = await axios.get('/api/clientf/', {
             headers: {Authorization: token}
         })
         return res
@@ -49,7 +49,7 @@ const axiosInstance = axios.create({
           const { 
                 token,
             } = getState()
-            const { data } = await axiosInstance.put(
+            const { data } = await axios.put(
             `/api/clientf/${clientf._id}`,
             clientf,{
                 headers: {Authorization: token}
@@ -100,7 +100,7 @@ const axiosInstance = axios.create({
             token,
         } = getState()
 
-          const {data} = await axiosInstance.get(`/api/clientf/${id}`,{
+          const {data} = await axios.get(`/api/clientf/${id}`,{
             headers: {Authorization: token}
         })
            
@@ -130,7 +130,7 @@ const axiosInstance = axios.create({
                 token,
             } = getState()
         
-            const { data } = await axiosInstance.post('/api/clientf/addclientf',clientf, {
+            const { data } = await axios.post('/api/clientf/addclientf',clientf, {
                 headers: {Authorization: token}
             })
             
@@ -182,7 +182,7 @@ const axiosInstance = axios.create({
           try {
             dispatch({ type: CLIENTF_LIST_REQUEST })
         
-            const { data } = await axiosInstance.get(
+            const { data } = await axios.get(
               `/api/clientf?keyword=${keyword}`
             )
         

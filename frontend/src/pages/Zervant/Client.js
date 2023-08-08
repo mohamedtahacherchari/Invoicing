@@ -66,7 +66,7 @@ const clientfList = useSelector((state) => state.clientfList)
             if(clientfs._id !== id){
                 if(window.confirm("Are you sure you want to delete this client?")){
                    setLoading(true)
-                    await axiosInstance.delete(`/api/clientf/${id}`, {
+                    await axios.delete(`/api/clientf/${id}`, {
                         headers: {Authorization: token}
                     })
                     setLoading(false)

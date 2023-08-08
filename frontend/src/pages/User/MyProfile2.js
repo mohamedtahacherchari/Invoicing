@@ -21,7 +21,7 @@ const MyProfile2 = () => {
       });
 	const OnSubmitUpdateUserAvatar = () =>{
          try {
-			axiosInstance.patch('/user/updateAvatar', {avatar},{
+			axios.patch('/user/updateAvatar', {avatar},{
 					headers: {Authorization: token}
 
 				})
@@ -74,7 +74,7 @@ const MyProfile2 = () => {
             formData.append('file', file)
 
             setLoading(true)
-            const res = await axiosInstance.post('/api/upload_avatar', formData, {
+            const res = await axios.post('/api/upload_avatar', formData, {
                 headers: {'content-type': 'multipart/form-data', Authorization: token}
             })
 

@@ -12,6 +12,9 @@ import {useSelector} from 'react-redux'
 import ErrorBoundary from '../../pages/Zervant/handleErrors '
 
 const MyChats = ({ fetchAgain }) => {
+  const axiosInstance = axios.create({
+    baseURL : process.env.REACT_APP_SERVER_URL,
+  });
   const auth = useSelector(state => state.auth)
   const {user} = auth
   const token = useSelector(state => state.token)

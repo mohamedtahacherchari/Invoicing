@@ -41,7 +41,7 @@ const axiosInstance = axios.create({
 
 
       export const fetchAllFacture = async (token) => {
-        const res = await axiosInstance.get('/api/facture/', {
+        const res = await axios.get('/api/facture/', {
             headers: {Authorization: token}
         })
 
@@ -65,7 +65,7 @@ const axiosInstance = axios.create({
             type: FACTURE_UPDATE_REQUEST,
           })
           const {token,} = getState()
-            const { data } = await axiosInstance.put(
+            const { data } = await axios.put(
             `/api/facture/${facture._id}`,
             facture,{
                 headers: {Authorization: token}
@@ -117,7 +117,7 @@ const axiosInstance = axios.create({
             token,
         } = getState()
 
-          const {data} = await axiosInstance.get(`/api/facture/${id}`,{
+          const {data} = await axios.get(`/api/facture/${id}`,{
             headers: {Authorization: token}
         })
 
@@ -147,7 +147,7 @@ const axiosInstance = axios.create({
                 token,
             } = getState()
         
-            const { data } = await axiosInstance.post('/api/facture/addfacture',facture, {
+            const { data } = await axios.post('/api/facture/addfacture',facture, {
                 headers: {Authorization: token}
             })
             
@@ -199,7 +199,7 @@ const axiosInstance = axios.create({
           try {
             dispatch({ type: FACTURE_LIST_REQUEST })
         
-            const { data } = await axiosInstance.get(
+            const { data } = await axios.get(
               `/api/facture?keyword=${keyword}`
             )
         
@@ -235,7 +235,7 @@ const axiosInstance = axios.create({
 
             }
         
-            await axiosInstance.get(`/api/facture/${id}/last-total`, config)
+            await axios.get(`/api/facture/${id}/last-total`, config)
         
             dispatch({
               type:  FACTURE_LASTTOTAL_SUCCESS,
@@ -258,7 +258,7 @@ const axiosInstance = axios.create({
 
 export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
           try {
-            const res = await axiosInstance.get(`/api/facture/sendMailwithoutDelivery/${id}`, {
+            const res = await axios.get(`/api/facture/sendMailwithoutDelivery/${id}`, {
               headers: {Authorization: token }});
             console.log(res.data);
 
@@ -300,7 +300,7 @@ export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
 
  export const envoyerMailAvecRemiseTotalEnPourcentage = (id, token) => async (dispatch) => {
     try {
-      const res = await axiosInstance.get(`/api/facture/sendMailwithDeliveryTotalInPercentage/${id}`, {
+      const res = await axios.get(`/api/facture/sendMailwithDeliveryTotalInPercentage/${id}`, {
       headers: { Authorization: token },});
       console.log(res.data);
       toast.success('Le message a été envoyé avec succès.', {
@@ -339,7 +339,7 @@ export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
         
 export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch) => {
           try {
-            const res = await axiosInstance.get(`/api/facture/sendMailwithDeliveryTotalInDevise/${id}`, {
+            const res = await axios.get(`/api/facture/sendMailwithDeliveryTotalInDevise/${id}`, {
             headers: { Authorization: token },});
             console.log(res.data);
             toast.success('Le message a été envoyé avec succès.', {
@@ -377,7 +377,7 @@ export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch
               };
               export const envoyerMailAvecRemiseParLigneEnPourcentage = (id, token) => async (dispatch) => {
                 try {
-                  const res = await axiosInstance.get(`/api/facture/sendMailwithDeliveryParLigneInPercentage/${id}`, {
+                  const res = await axios.get(`/api/facture/sendMailwithDeliveryParLigneInPercentage/${id}`, {
                   headers: { Authorization: token },});
                   console.log(res.data);
                   toast.success('Le message a été envoyé avec succès.', {
@@ -416,7 +416,7 @@ export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch
 
    export const envoyerMailAvecRemiseParLigneEnDevise = (id, token) => async (dispatch) => {
         try {
-        const res = await axiosInstance.get(`/api/facture/sendMailwithDeliveryParLigneInDevise/${id}`, {
+        const res = await axios.get(`/api/facture/sendMailwithDeliveryParLigneInDevise/${id}`, {
         headers: { Authorization: token },});
         console.log(res.data);
         toast.success('Le message a été envoyé avec succès.', {

@@ -26,7 +26,7 @@ const axiosInstance = axios.create({
 
 
       export const fetchAllProduct = async (token) => {
-        const res = await axiosInstance.get('/api/product/', {
+        const res = await axios.get('/api/product/', {
             headers: {Authorization: token}
         })
         return res
@@ -48,7 +48,7 @@ const axiosInstance = axios.create({
           const { 
                 token,
             } = getState()
-            const { data } = await axiosInstance.put(
+            const { data } = await axios.put(
             `/api/product/${product._id}`,
             product,{
                 headers: {Authorization: token}
@@ -100,7 +100,7 @@ const axiosInstance = axios.create({
             token,
         } = getState()
 
-          const {data} = await axiosInstance.get(`/api/product/${id}`,{
+          const {data} = await axios.get(`/api/product/${id}`,{
             headers: {Authorization: token}
         })
 
@@ -130,7 +130,7 @@ const axiosInstance = axios.create({
                 token,
             } = getState()
         
-            const { data } = await axiosInstance.post('/api/product/addproduct',product, {
+            const { data } = await axios.post('/api/product/addproduct',product, {
                 headers: {Authorization: token}
             })
             
@@ -182,7 +182,7 @@ const axiosInstance = axios.create({
           try {
             dispatch({ type: PRODUCT_LIST_REQUEST })
         
-            const { data } = await axiosInstance.get(
+            const { data } = await axios.get(
               `/api/product?keyword=${keyword}`
             )
         

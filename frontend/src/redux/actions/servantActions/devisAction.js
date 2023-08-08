@@ -26,7 +26,7 @@ const axiosInstance = axios.create({
 
 
       export const fetchAllDevis = async (token) => {
-        const res = await axiosInstance.get('/api/devis/', {
+        const res = await axios.get('/api/devis/', {
             headers: {Authorization: token}
         })
 
@@ -53,7 +53,7 @@ const axiosInstance = axios.create({
           const { 
                 token,
             } = getState()
-            const { data } = await axiosInstance.put(
+            const { data } = await axios.put(
             `/api/devis/${devis._id}`,
             devis,{
                 headers: {Authorization: token}
@@ -105,7 +105,7 @@ const axiosInstance = axios.create({
             token,
         } = getState()
 
-          const {data} = await axiosInstance.get(`/api/devis/${id}`,{
+          const {data} = await axios.get(`/api/devis/${id}`,{
             headers: {Authorization: token}
         })
 
@@ -135,7 +135,7 @@ const axiosInstance = axios.create({
                 token,
             } = getState()
         
-            const { data } = await axiosInstance.post('/api/devis/adddevis',devis, {
+            const { data } = await axios.post('/api/devis/adddevis',devis, {
                 headers: {Authorization: token}
             })
             
@@ -187,7 +187,7 @@ const axiosInstance = axios.create({
           try {
             dispatch({ type: DEVIS_LIST_REQUEST })
         
-            const { data } = await axiosInstance.get(
+            const { data } = await axios.get(
               `/api/devis?keyword=${keyword}`
             )
         

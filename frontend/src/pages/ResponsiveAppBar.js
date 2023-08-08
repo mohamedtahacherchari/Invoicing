@@ -44,7 +44,7 @@ function ResponsiveAppBar() {
   
 const logoutHandler = async () => {
   try {
-      await axiosInstance.get('/user/logout')
+      await axios.get('/user/logout')
       localStorage.removeItem('firstLogin')
       window.location.reload(false);
       window.location.href = "/";

@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   });
   
 export const fetchAllDevisAdmin = async (token) => {
-    const res = await axiosInstance.get('/api/devis/DevisAdmin', {
+    const res = await axios.get('/api/devis/DevisAdmin', {
         headers: {Authorization: token}
     })
 

@@ -136,7 +136,7 @@ export default function SignUp() {
         }
 
         try {
-                   const {data}= await axiosInstance.post('/user/register',
+                   const {data}= await axios.post('/user/register',
                     {firstName, lastName, email, password})
                     setUser({...user, err: '', success: data.msg})
                     toast.success("Check Your Email to activate your account.", {

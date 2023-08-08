@@ -4,7 +4,7 @@ const axiosInstance = axios.create({
     baseURL : process.env.REACT_APP_SERVER_URL,
   });
 export const fetchAllFactureAdmin = async (token) => {
-    const res = await axiosInstance.get('/api/facture/FactureAdmin', {
+    const res = await axios.get('/api/facture/FactureAdmin', {
         headers: {Authorization: token}
     })
 

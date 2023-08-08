@@ -10,7 +10,7 @@ export const dispatchLogin = () => {
 }
 
 export const fetchUser = async (token) => {
-    const res = await axiosInstance.get('/user/infor', {
+    const res = await axios.get('/user/infor', {
         headers: {Authorization: token}
     })
     return res

@@ -53,7 +53,7 @@ const productList = useSelector((state) => state.productList)
             if(products._id !== id){
                 if(window.confirm("Are you sure you want to delete this client?")){
                    setLoading(true)
-                    await axiosInstance.delete(`/api/product/${id}`, {
+                    await axios.delete(`/api/product/${id}`, {
                         headers: {Authorization: token}
                     })
                     setLoading(false)

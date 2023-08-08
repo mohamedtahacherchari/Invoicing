@@ -20,9 +20,7 @@ const{id} =useParams()
 
   const navigate =  useNavigate();
 
-  const axiosInstance = axiosInstance.create({
-    baseURL : process.env.REACT_APP_SERVER_URL,
-    });
+
 
   const [loading, setLoading] = useState(false)
   const [callback, setCallback] = useState(false)
@@ -55,7 +53,7 @@ const factureList = useSelector((state) => state.factureList)
             if(factures._id !== id){
                 if(window.confirm("Are you sure you want to delete this facture?")){
                    setLoading(true)
-                    await axiosInstance.delete(`/api/facture/${id}`, {
+                    await axios.delete(`/api/facture/${id}`, {
                         headers: {Authorization: token}
                     })
                     setLoading(false)

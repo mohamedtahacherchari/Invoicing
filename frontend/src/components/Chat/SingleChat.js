@@ -20,6 +20,9 @@ const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain}) => {
+  const axiosInstance = axios.create({
+    baseURL : process.env.REACT_APP_SERVER_URL,
+  });
 const auth = useSelector(state => state.auth)
  const {user} = auth
   const token = useSelector(state => state.token)

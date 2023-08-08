@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   });
   
 export const fetchAllProductAdmin = async (token) => {
-    const res = await axiosInstance.get('/api/product/ProductAdmin', {
+    const res = await axios.get('/api/product/ProductAdmin', {
         headers: {Authorization: token}
     })
 

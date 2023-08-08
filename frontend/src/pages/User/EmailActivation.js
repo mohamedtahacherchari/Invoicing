@@ -13,7 +13,7 @@ const EmailActivation = () => {
     const [success, setSuccess] = useState('')
     const activationEmail = async () => {
         try {
-            const res = await axiosInstance.post('/user/activation', {activation_token})
+            const res = await axios.post('/user/activation', {activation_token})
             toast.success("Email Activated.", {
                 position: "top-right",
                 autoClose: 5000,
@@ -45,7 +45,7 @@ const EmailActivation = () => {
         if(activation_token){
             const activationEmail = async () => {
                 try {
-                    const res = await axiosInstance.post('/user/activation', {activation_token})
+                    const res = await axios.post('/user/activation', {activation_token})
                     toast.success("Email Activated.", {
                         position: "top-right",
                         autoClose: 5000,
