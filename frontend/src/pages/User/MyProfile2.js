@@ -21,7 +21,7 @@ const MyProfile2 = () => {
       });
 	const OnSubmitUpdateUserAvatar = () =>{
          try {
-			axios.patch('/user/updateAvatar', {avatar},{
+			axios.patch('/api/user/updateAvatar', {avatar},{
 					headers: {Authorization: token}
 
 				})

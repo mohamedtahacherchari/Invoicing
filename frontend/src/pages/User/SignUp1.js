@@ -136,7 +136,7 @@ export default function SignUp() {
             axios.request(options).then(async function (response) {
                 
                 if(response.data.response.email_status==="Yes"){
-                    const res = await axios.post('/user/register', {
+                    const res = await axios.post('/api/user/register', {
                         firstName, lastName, email, password
                     })
                     setUser({...user, err: '', success: res.data.msg})

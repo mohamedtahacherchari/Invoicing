@@ -96,7 +96,7 @@ const EditProfile = () => {
 
     const updateInfor = () => {
         try {
-            axios.patch('/user/update', {
+            axios.patch('/api/user/update', {
                 lastName: lastName ? lastName : user.lastName,
 				firstName: firstName ? firstName : user.firstName,
                 avatar: avatar ? avatar : user.avatar
@@ -136,7 +136,7 @@ const EditProfile = () => {
             return setData({...data, err: "Password did not match.", success: ''})
 
         try {
-            axios.post('/user/reset', {password},{
+            axios.post('/api/user/reset', {password},{
                 headers: {Authorization: token}
             })
             toast.success("mot de passe a été changer avec success", {
@@ -164,7 +164,7 @@ const EditProfile = () => {
             if(user._id !== id){
                 if(window.confirm("Are you sure you want to delete this account?")){
                     setLoading(true)
-                    await axios.delete(`/user/delete/${id}`, {
+                    await axios.delete(`/api/user/delete/${id}`, {
                         headers: {Authorization: token}
                     })
                     toast.success("supprimer avec succes", {

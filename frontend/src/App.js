@@ -26,7 +26,7 @@ function App() {
 		const firstLogin = localStorage.getItem('firstLogin')
 		if(firstLogin){
 			const getToken = async () => {
-			const res = await axios.post('/user/refresh_token', null)
+			const res = await axios.post('/api/user/refresh_token', null)
 			dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
 		}
 		getToken()
@@ -53,12 +53,12 @@ function App() {
 				<Route path='/*' element={ isLogged ?  <Home3/> : <SignIn />} />
 
 				{/*Authentication Routes */}
-				<Route path='/inv/register' element={ isLogged ? <Home3/> : <SignUp />} />
-				<Route path="inv/forgotpassword" element={<ForgotPassword/>} />
-				<Route path="inv/user/activate/:activation_token" element={<EmailActivation/>} />
-	             <Route path='inv/chats' element={<Chatpage/>} />
+				<Route path="/inv/register" element={ isLogged ? <Home3/> : <SignUp />} />
+				<Route path="/inv/forgotpassword" element={<ForgotPassword/>} />
+				<Route path="/inv/user/activate/:activation_token" element={<EmailActivation/>} />
+	             <Route path='/inv/chats' element={<Chatpage/>} />
 		    	{/*<Route path='/hover' element={<Hover/>} />*/}
-				<Route path="inv/fact" element={<ResponsiveAppBar/>}/>
+				<Route path="/inv/fact" element={<ResponsiveAppBar/>}/>
 
 
     

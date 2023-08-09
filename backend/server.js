@@ -35,7 +35,7 @@ app.use(cookieParser())
 //}))
 
 //routes
-app.use('/user', require('./routes/userRoutes'))
+app.use('/api/user', require('./routes/userRoutes'))
 //app.use('/api/upload', uploadRoutes)
 // Le préfixe '/api' peut être modifié selon vos besoins
 //app.use('/api/softskills', require('./routes/Candidat/softskillsRoutes'))

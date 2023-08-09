@@ -48,7 +48,7 @@ const Users = () => {
             if(user._id !== id){
                 if(window.confirm("Êtes-vous sûr de vouloir supprimer ce compte?")){
                     setLoading(true)
-                    await axios.delete(`/user/delete/${id}`, {
+                    await axios.delete(`/api/user/delete/${id}`, {
                         headers: {Authorization: token}
                     })
                     setLoading(false)

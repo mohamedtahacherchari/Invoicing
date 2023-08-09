@@ -73,7 +73,7 @@ console.log(user.avatar)
   const OnSubmitUpdateUser = () =>{
 
 		try {
-			axios.patch('/user/update', 
+			axios.patch('/api/user/update', 
 			{
 				firstName,
 				lastName,

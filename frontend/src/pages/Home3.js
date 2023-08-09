@@ -247,7 +247,7 @@ const Home = (props) => {
 		const firstLogin = localStorage.getItem('firstLogin')
 		if(firstLogin){
 		const getToken = async () => {
-			const res = await axios.post('/user/refresh_token', null)
+			const res = await axios.post('/api/user/refresh_token', null)
 			dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
 		}
 		getToken()
@@ -323,25 +323,8 @@ const Home = (props) => {
                     <Route path="/inv/printAvecRemiseTabPourcent2/:id" element={<DevisToPrint4/>} />
                     <Route path="/inv/printAvecRemiseTabDevise2/:id" element={<DevisToPrint5/>} />
                     <Route path="/inv/upload" element={<UploadForm/>} />
-
-
-
-
-
-
-
-
-
-
-                    
-
-
-
-
-
-
-				</Routes>
-            </Box>
+	</Routes>
+    </Box>
     </ThemeProvider>
     )
 }

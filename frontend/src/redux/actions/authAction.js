@@ -1,8 +1,6 @@
 import ACTIONS from './index'
 import axios from 'axios'
-const axiosInstance = axios.create({
-    baseURL : process.env.REACT_APP_SERVER_URL,
-  });
+
 export const dispatchLogin = () => {
     return {
         type: ACTIONS.LOGIN
@@ -10,7 +8,7 @@ export const dispatchLogin = () => {
 }
 
 export const fetchUser = async (token) => {
-    const res = await axios.get('/user/infor', {
+    const res = await axios.get('/api/user/infor', {
         headers: {Authorization: token}
     })
     return res

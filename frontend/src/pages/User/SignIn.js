@@ -23,9 +23,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
 import GoogleOneTapLogin from './GoogleOneTapLogin';
 const theme = createTheme();
-const axiosInstance = axios.create({
-	baseURL : process.env.REACT_APP_SERVER_URL,
-  });
+
 function Copyright(props) {
 	return (
 		<Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -73,7 +71,7 @@ export default function SignIn() {
 
 		event.preventDefault();
 		try {
-		const res = await axios.post('/user/login', {email, password},
+		const res = await axios.post('/api/user/login', {email, password},
 		{
 			headers: {Authorization: token}
 		  }
@@ -98,7 +96,7 @@ export default function SignIn() {
 			progress: undefined,
 		});
 		localStorage.setItem("userInfo", JSON.stringify(res));
-		navigate('/accueil');
+		navigate('/inv/accueil');
 		} catch (err) {
 
 	err.response.data.msg && setUser({...user, err: '', success: ''})
@@ -208,12 +206,12 @@ export default function SignIn() {
 					</Button>
 					<Grid container>
 					<Grid item xs>
-					<Link href="/forgotpassword" variant="body2">
+					<Link href="/inv/forgotpassword" variant="body2">
 						Oublier mot de passe?
 					</Link>
 					</Grid>
 					<Grid item>
-					<Link href="/register" variant="body2">
+					<Link href="/inv/register" variant="body2">
 						{"Vous n'avez pas un compte ? S'inscrire"}
 					</Link>
 					</Grid>

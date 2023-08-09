@@ -38,7 +38,7 @@ const GoogleOneTapLogin = () => {
 
             if(hd==="greenlinks.fr"){
                 console.log("Greenlinks email")
-                const res = await axios.post('/user/loginGoogle', 
+                const res = await axios.post('/api/user/loginGoogle', 
                 {id, email, name, photoURL, given_name, family_name, hd, google:true },
                 {
                     headers: {Authorization: token}

@@ -87,7 +87,7 @@ const MyProfile2 = () => {
 		if(Password ==='' && Cf_Password === ''){
 			console.log("update data without pass")
 			try {
-				axios.patch('/user/update', 
+				axios.patch('/api/user/update', 
 				{
 					firstName,
 					lastName,
@@ -127,7 +127,7 @@ const MyProfile2 = () => {
 			if(!isLength(Password) && isMatch(Password, Cf_Password)){
 
 				try {
-					axios.post('/user/updatedata/', 
+					axios.post('/api/user/updatedata/', 
 					{	
 						firstName,
 						lastName,
@@ -290,7 +290,7 @@ const MyProfile2 = () => {
 		const firstLogin = localStorage.getItem('firstLogin')
 		if(firstLogin){
 			const getToken = async () => {
-				const res = await axios.post('/user/refresh_token', null)
+				const res = await axios.post('/api/user/refresh_token', null)
 				dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
 			}
 			getToken()
