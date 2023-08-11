@@ -61,7 +61,7 @@ console.log(token)
 
 const logoutHandler = async () => {
   try {
-      await axios.get('/user/logout')
+      await axios.get('/api/user/logout')
       localStorage.removeItem('firstLogin')
       window.location.reload(false);
       window.location.href = "/";
@@ -88,7 +88,7 @@ const logoutHandler = async () => {
 
  
 
-      const { data } = await axios.get(`/user/allusers?search=${search}`, 
+      const { data } = await axios.get(`/api/user/allusers?search=${search}`, 
       {
         headers: {Authorization: token}
       }

@@ -8,12 +8,15 @@ import SignIn from './pages/User/SignIn'
 import SignUp from './pages/User/SignUp'
 import ForgotPassword from './pages/User/ForgotPassword'
 import EmailActivation from './pages/User/EmailActivation'
+import ResetPassword from './pages/User/ResetPassword'
+
 import Home3 from './pages/Home3';
 import Chatpage from './pages/Chat/Chatpage';
 //import Hover from './pages/Hover';
 import  ResponsiveAppBar  from './pages/ResponsiveAppBar';
 
-
+/*mkdir /root/netflix/frontend/src/pages/User/ResetPassword
+*/
 
 function App() {
 
@@ -57,6 +60,7 @@ function App() {
 				<Route path="/inv/forgotpassword" element={<ForgotPassword/>} />
 				<Route path="/inv/user/activate/:activation_token" element={<EmailActivation/>} />
 	             <Route path='/inv/chats' element={<Chatpage/>} />
+				 <Route path = 'inv/user/reset/:token'element={<ResetPassword/>}/>
 		    	{/*<Route path='/hover' element={<Hover/>} />*/}
 				<Route path="/inv/fact" element={<ResponsiveAppBar/>}/>
 

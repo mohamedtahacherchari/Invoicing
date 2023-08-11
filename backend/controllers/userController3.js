@@ -34,7 +34,7 @@ const userController = {
                 const activation_token = createActivationToken(newUser)
 
 
-            const url = `${CLIENT_URL}/user/activate/${activation_token}`
+            const url = `${CLIENT_URL}/inv/user/activate/${activation_token}`
 
             sendMail(email,url)
             
@@ -129,7 +129,7 @@ const userController = {
             if(!user) return res.status(400).json({msg: "This email does not exist."})
 
             const access_token = createAccessToken({id: user._id})
-            const url = `${CLIENT_URL}/user/reset/${access_token}`
+            const url = `${CLIENT_URL}/inv/user/reset/${access_token}`
 
             sendMail(email, url, "Reset your password")
             res.json({msg: "Re-send the password, please check your email."})
@@ -172,7 +172,7 @@ const userController = {
     },
     logout: async (req, res) => {
         try {
-            res.clearCookie('refreshtoken', {path: '/user/refresh_token'})
+            res.clearCookie('refreshtoken', {path: '/api/user/refresh_token'})
             return res.json({msg: "Logged out."})
         } catch (err) {
             return res.status(500).json({msg: err.message})
