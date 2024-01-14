@@ -107,7 +107,8 @@ const Users = () => {
                                             </Link>
                                             <i className="fas fa-trash-alt" title="Remove"
                                             onClick={() => handleDelete(user._id)} ></i>
-                                        </td>
+
+                                </td>
                                     </tr>
                                 ))
                             }

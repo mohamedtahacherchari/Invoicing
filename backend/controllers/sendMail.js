@@ -7,7 +7,8 @@ const {
     MAILING_SERVICE_CLIENT_ID,
     MAILING_SERVICE_CLIENT_SECRET,
     MAILING_SERVICE_REFRESH_TOKEN,
-    SENDER_EMAIL_ADDRESS
+    SENDER_EMAIL_ADDRESS,
+    email_admin
 } = process.env
 
 const oauth2Client = new OAuth2(
@@ -18,7 +19,7 @@ const oauth2Client = new OAuth2(
 )
 
 // send mail
-const sendEmail = (to, url, txt) => {
+const sendEmail =(to, url,firstName, lastName,txt) => {
     oauth2Client.setCredentials({
         refresh_token: MAILING_SERVICE_REFRESH_TOKEN
     })
@@ -38,8 +39,8 @@ const sendEmail = (to, url, txt) => {
 
     const mailOptions = {
         from: SENDER_EMAIL_ADDRESS,
-        to: to,
-        subject:  txt ? txt : txt ='activer votre compte'  ,
+        to: [email_admin, SENDER_EMAIL_ADDRESS], 
+        subject:  txt ? txt : txt ='Activation de compte'  ,
         html: `
         <!DOCTYPE html>
         <html>
@@ -164,7 +165,7 @@ const sendEmail = (to, url, txt) => {
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                             <tr>
                                 <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                                    <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Welcome!</h1> <img src=" https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
+                                    <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Activation</h1> <img src="https://res.cloudinary.com/dht74dycs/image/upload/v1692685565/noun-customer-activation-3154090_1_dsl8m9.png" width="125" height="120" style="display: block; border: 0px;" />
                                 </td>
                             </tr>
                         </table>
@@ -175,7 +176,11 @@ const sendEmail = (to, url, txt) => {
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                             <tr>
                                 <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                    <p style="margin: 0;"> Nous sommes ravis que vous commenciez. Tout d'abord, vous devez confirmer votre compte. Appuyez simplement sur le bouton ci-dessous.</p>
+                                <div class="activation-request">
+                                <p style="margin: 0;">
+                                    ${lastName} ${firstName} souhaite obtenir un compte et demande son activation.
+                                </p>
+                            </div>
                                 </td>
                             </tr>
                             <tr>
@@ -185,7 +190,15 @@ const sendEmail = (to, url, txt) => {
                                             <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                                 <table border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href=${url} target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"> ${txt}</a></td>
+                                                        <td align="center" style="border-radius: 3px;
+                                                        " bgcolor="#FFA73B"><a href=${url}
+                                                         target="_blank" style="font-size: 20px;
+                                                          font-family: Helvetica, Arial, sans-serif; 
+                                                          color: #ffffff; text-decoration: none;
+                                                           color: #ffffff; text-decoration: none;
+                                                            padding: 15px 25px; border-radius: 2px;
+                                                             border: 1px solid #FFA73B; display: inline-block;"> 
+                                                             ${txt}</a></td>
                                                     </tr>
                                                 </table>
                                             </td>
@@ -205,7 +218,7 @@ const sendEmail = (to, url, txt) => {
                             </tr>
                             <tr>
                                 <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                    <p style="margin: 0;">Si vous avez des questions, répondez simplement à cet e-mail. Nous serons toujours ravis de vous aider.</p>
+                            
                                 </td>
                             </tr>
                             <tr>

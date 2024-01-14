@@ -2,6 +2,7 @@ const Users = require('../models/userModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const sendMail = require('./sendMail')
+const sendMail2 = require('./sendMail2')
 const generateToken = require('../utils/generateToken')
 
 const {CLIENT_URL} = process.env
@@ -34,11 +35,13 @@ const userController = {
                 const activation_token = createActivationToken(newUser)
 
 
-            const url = `${CLIENT_URL}/inv/user/activate/${activation_token}`
+            const url = `${CLIENT_URL}/alia/inv/${activation_token}`
 
-            sendMail(email,url)
+            sendMail(email,url, firstName, lastName)
             
             res.json({msg: "Please activate mail to start"})
+             
+            
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -129,9 +132,8 @@ const userController = {
             if(!user) return res.status(400).json({msg: "This email does not exist."})
 
             const access_token = createAccessToken({id: user._id})
-            const url = `${CLIENT_URL}/inv/user/reset/${access_token}`
-
-            sendMail(email, url, "Reset your password")
+            const url = `${CLIENT_URL}/api/${access_token}`
+            sendMail2(email,url,"Reset your password")
             res.json({msg: "Re-send the password, please check your email."})
         } catch (err) {
             return res.status(500).json({msg: err.message})
@@ -250,7 +252,7 @@ const userController = {
             }
           : {};
       
-        const users = await Users.find(keyword).find({ _id: { $ne: req.user.id } });
+        const users = await Users.find(keyword).find({ _id: { $ne: req.user._id } });
         res.send(users);       
 
       },
@@ -334,6 +336,7 @@ const userController = {
 }
 
 const createActivationToken = (payload) => {
+   
     return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET)
 } 
 

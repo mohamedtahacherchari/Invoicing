@@ -342,7 +342,7 @@ value={TTCprix}
 onChange={(e) => setTTCprix(e.target.value)}
 />
 
-<Button onClick={()=>navigate("/product")}>Retour à la liste des produits</Button>
+<Button onClick={()=>navigate("/inv/product")}>Retour à la liste des produits</Button>
 <Button type='submit'>Modifier</Button>
 
 

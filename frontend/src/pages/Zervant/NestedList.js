@@ -64,6 +64,33 @@ setShowResumeFacturePourcent,
       setShowMontant(false);
       setShowMontantPourcent(false);
 
+
+      setShowPourcentageTotal(false);
+      setShowDeviseTotal(false);
+      setShowPourcentageTab(false);
+      setShowDeviseTab(false);
+      setShowSommeDevise(false);
+      setShowResumeFacturePourcent(false);
+      setShowResumeFactureDevise(false);
+      setShowTotalHTPourcent_Tab(false);
+      setShowTotalHT_Tab(false);
+      setShowTotalHT(false);
+      setShowTotalHTPourcent(false);
+      setShowResumeFacture2(false);
+      setShowResumeFacture(false);
+      setShowSansRemise(false);
+      setShowAcomptePourcent_Total(false);
+      setShowAcompteDevise_Total(false);
+      setShowAcompte(false);
+      setShowAcomptePourcent_Tab(false);
+      setShowAcompteDevise_Tab(false);
+      setMontrerHT(false);
+      setShowButtonAvecRemiseTotalPourcent(false);
+      setShowButtonAvecRemiseTotalDevise(false);
+      setShowButtonAvecRemiseTabPourcent(false);
+      setShowButtonAvecRemiseTabDevise(false)
+
+
     } else {
       setMontrerHT(true);
       setShowSansRemise(true);
@@ -74,6 +101,34 @@ setShowResumeFacturePourcent,
       setShowMontantHTPourcent(false);
       setShowMontant(false);
       setShowMontantPourcent(false);
+      
+
+      setShowPourcentageTotal(false);
+      setShowDeviseTotal(false);
+      setShowPourcentageTab(false);
+      setShowDeviseTab(false);
+      setShowSommeDevise(false);
+      setShowResumeFacturePourcent(false);
+      setShowResumeFactureDevise(false);
+      setShowTotalHTPourcent_Tab(false);
+      setShowTotalHT_Tab(false);
+      setShowTotalHT(false);
+      setShowTotalHTPourcent(false);
+      setShowResumeFacture2(false);
+      setShowResumeFacture(false);
+      //setShowSansRemise(false);
+      setShowAcomptePourcent_Total(false);
+      setShowAcompteDevise_Total(false);
+      setShowAcompte(false);
+      setShowAcomptePourcent_Tab(false);
+      setShowAcompteDevise_Tab(false);
+      //setMontrerHT(false);
+      setShowButtonAvecRemiseTotalPourcent(false);
+      setShowButtonAvecRemiseTotalDevise(false);
+      setShowButtonAvecRemiseTabPourcent(false);
+      setShowButtonAvecRemiseTabDevise(false)
+
+
     }
   }
   const handleChangeAcompte = () => {
@@ -100,7 +155,6 @@ setShowResumeFacturePourcent,
     setShowTotalHTPourcent(false);
     setShowResumeFacture2(false);
     setShowSansRemise(false);
-    setShowTotalHTPourcent(false);
     setShowTotalHT_Tab(false);
     setShowTotalHTPourcent_Tab(false);
     setShowAcomptePourcent_Total(false);
@@ -154,7 +208,7 @@ setShowResumeFacturePourcent,
       setShowSommeDevise(false);
       setShowResumeFacturePourcent(false);
       setShowResumeFactureDevise(false);
-      setShowResumeFacture(true);
+     //setShowResumeFacture(true);
       setShowTotalHTPourcent_Tab(true);
       setShowTotalHT_Tab(false);
       setShowTotalHT(false);
@@ -314,8 +368,18 @@ const handleClick8 = () => {
   return (
     <>
       <List
-  sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper',display: "flex-",position: "absolute",
-  top: "100Px",left: "1000px", width:"250px",right: "0",height:"1200px"  ,  borderRadius: "10px", overflow: "hidden", 
+  sx={{ width: '100%', 
+  maxWidth: 360, 
+  bgcolor: 'background.paper',
+  display: "flex-",
+  position: "absolute",
+  top: "100Px",
+  left: "1000px",
+   width:"250px",
+   right: "0",
+   height:"1900px" , 
+    borderRadius: "10px",
+    overflow: "hidden", 
 }}aria-labelledby=""
   style={{backgroundColor:"#8FBC8F"}}>
 <ListItemButton onClick={handleClick2}>
@@ -352,15 +416,15 @@ const handleClick8 = () => {
            style={{marginLeft:"30px"}}/>
          </List>
       </Collapse>
-         <ListItemButton onClick={handleClick8}>
+      <div style={{color:"white",marginTop :"100%"}}>Choisissez le type de devis</div>
+         <ListItemButton onClick={handleClick8} style={{marginTop :""}}>
          <input onChange={handleMontrer}    type="checkbox"/>
 
          <ListItemText
-  primary={
-    <Typography variant="body1" style={{ color: "white" }}>
-      Remise
-    </Typography>
-  }
+  primary=
+      "Remise"
+    
+  
   primaryTypographyProps={{ style: { color: "white" } }}
   checked={true} // Définir cette propriété à true pour cocher l'élément initialement
 />

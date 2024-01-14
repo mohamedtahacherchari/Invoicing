@@ -193,6 +193,24 @@ const devisModel = mongoose.Schema(
         type: Boolean,
         //required: true,
       },
+      email: {
+        type: String,
+        //required: true,
+      },
+      adresse: {
+        type: String,
+        //required: true,
+      },
+
+      codePostale: {
+        type: String,
+        //required: true,
+      },
+
+      nomDevis: {
+        type: String,
+        //required: true,
+      },
 
       totalRemise: {
         type: String,
@@ -305,7 +323,12 @@ const devisModel = mongoose.Schema(
         type: String,
         //required: true,
       },
-
+      pdfTitle: {
+        type: String,
+      },
+      pdfData: {
+        type: Buffer, // Stockez le contenu du fichier PDF sous forme de Buffer
+      },
 
 
   },

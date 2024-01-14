@@ -91,6 +91,7 @@ function ResetPassword() {
        
     }
     return (
+        <div>
     <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
         <ToastContainer />
@@ -148,6 +149,8 @@ function ResetPassword() {
             <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
     </ThemeProvider>
+              
+    </div>
     )
 }
 

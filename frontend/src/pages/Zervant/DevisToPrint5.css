@@ -1,0 +1,29 @@
+.remise-container {
+    text-align: right;
+}
+
+  .responsive-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 60px;
+    margin-left: 300px;
+    flex-direction: column; /* Mettre la direction par défaut à l'horizontale */
+
+  }
+
+
+  /* Appliquer un style spécifique lorsque la largeur d'écran est inférieure à 768px */
+@media screen and (max-width: 768px) {
+    .responsive-container {
+      margin-left: 0;
+      flex-direction: row;
+    }
+    
+    .item {
+      flex-basis: 100%;
+    }
+
+    .remise-container {
+        text-align: left;
+    }
+  }  

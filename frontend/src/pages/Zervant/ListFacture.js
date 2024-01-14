@@ -1,8 +1,8 @@
 import React, {useState, useEffect,useRef } from 'react'
-import {  useNavigate ,useParams} from "react-router-dom"
+import {useNavigate ,useParams} from "react-router-dom"
 import NestedList from './ListeDroite2';
 import styles from './Invoice.module.css'
-import PrintIcon from '@mui/icons-material/Print';
+import './ListFacture.css'
 import {Link} from 'react-router-dom'
 import moment from 'moment'
 import {useSelector,useDispatch} from 'react-redux'
@@ -27,7 +27,8 @@ import { FACTURE_UPDATE_RESET } from '../../redux/actions/servantActions/constan
 import { dispatchGetAllClientf, fetchAllClientf } from '../../redux/actions/servantActions/clientfAction';
 import { dispatchGetAllProduct, fetchAllProduct } from '../../redux/actions/servantActions/productAction';
 import CustomizedSelects from './CrediatorRef';
-
+import { dispatchGetAllClientAdmin, fetchAllClientAdmin } from '../../redux/actions/servantActions/clientAdminAction';
+import { dispatchGetAllProductAdmin, fetchAllProductAdmin } from '../../redux/actions/servantActions/productAdminAction';
 const ListFacture = () => {
       const {id} = useParams()
       const navigate =  useNavigate();
@@ -90,9 +91,6 @@ const [subTotal2, setSubTotal2] = useState("hello")
 const [subTotal4, setSubTotal4] = useState(0)
 const [totalHT, setTotalHT] = useState("hello")
 const [totalHT2, setTotalHT2] = useState("hello")
-
-//const [totalHT_Tab, setTotalHT_Tab] = useState("")
-//const [totalHT_Tab_P, setTotalHT_Tab_P] = useState("")
 const [totalRemise, setTotalRemise] = useState("hello")
 const [totalRemise2, setTotalRemise2] = useState("hello")
 const [totalHTPourcent, setTotalHTPourcent] = useState("hello")
@@ -137,18 +135,17 @@ const [showTotalHT_Tab, setShowTotalHT_Tab] = useState(false)
 const [showTotalHTPourcent_Tab, setShowTotalHTPourcent_Tab] = useState(false)
 const [showSansRemise, setShowSansRemise] = useState(false)
 const [showAcompte, setShowAcompte] = useState(false)
-const [Acompte, setAcompte] = useState('')
-const [Acompte1, setAcompte1] = useState('')
-const [Acompte2, setAcompte2] = useState('')
-const [Acompte3, setAcompte3] = useState('')
-const [Acompte4, setAcompte4] = useState('')
+const [Acompte, setAcompte] = useState('10')
+const [Acompte1, setAcompte1] = useState('10')
+const [Acompte2, setAcompte2] = useState('10')
+const [Acompte3, setAcompte3] = useState('10')
+const [Acompte4, setAcompte4] = useState('10')
 const [showAcomptePourcent_Total, setShowAcomptePourcent_Total] = useState(false)
 const [showAcompteDevise_Total, setShowAcompteDevise_Total] = useState(false)
 const [showAcomptePourcent_Tab, setShowAcomptePourcent_Tab] = useState(false)
 const [showAcompteDevise_Tab, setShowAcompteDevise_Tab] = useState(false)
 const [showMontantOriginale, setShowMontantOriginale] = useState(false)
 const [showMontantOriginaleHT, setShowMontantOriginaleHT] = useState(false)
-
 const [montrerHT, setMontrerHT] = useState(false)
 const [saveDevise, setSaveDevise] = useState(false)
 const [showButtonSansRemise, setShowButtonSansRemise] = useState(false)
@@ -156,8 +153,6 @@ const [showButtonAvecRemiseTotalPourcent, setShowButtonAvecRemiseTotalPourcent] 
 const [showButtonAvecRemiseTotalDevise, setShowButtonAvecRemiseTotalDevise] = useState(false)
 const [showButtonAvecRemiseTabDevise, setShowButtonAvecRemiseTabDevise] = useState(false)
 const [showButtonAvecRemiseTabPourcent, setShowButtonAvecRemiseTabPourcent] = useState(false)
-//const [prixFactTotalePourcent, setPrixFactTotalePourcent] = useState(false)
-//const [prixFactTotaleDevise, setPrixFactTotalePourcent] = useState(false)
 const [total, setTotal] = useState(0);
 const [email, setEmail]= useState();
 const [adresse, setAdresse]= useState();
@@ -166,15 +161,9 @@ const [totalHorsTva, setTotalHorsTva] = useState(0);
 const [nomFacture, setNomFacture] = useState();
 const [acompteEnDevise, setAcompteEnDevise] = useState();
 
-
-
-
-
-
 let remiseParLignePourcent = ( subTotal - subTotal2).toFixed(2)
 console.log(subTotal)
 console.log(subTotal2)
-
 
 let echa = moment(today.getTime() +cond *24*60*60*1000).format("DD/MM/YYYY")
 const handleClick = () => {
@@ -184,15 +173,6 @@ const handleClick = () => {
     const values  =[...invoiceData.items];
     values[index][e.target.name] = e.target.value;
     setInvoiceData({...invoiceData, items: values});}
-
- /*const handleChangeTitre2 = (index, e) => {
-    const values = [...titre.items2];
-    values[index][e.target.name] = e.target.value;
-    setTitre((prevState) => ({
-      ...prevState,
-      items2: values,
-    }));
-  };*/
  
   const handleChangeTitre = (index, e) => {
     const values = [...invoiceData.items2];
@@ -205,20 +185,14 @@ const handleClick = () => {
     values[index][e.target.name] = e.target.value;
     setInvoiceData({...invoiceData , items3: values});
   };
-  const handleChangeSous = (index, e) => {
-    const values = [...invoiceData.items4];
-    values[index][e.target.name] = e.target.value;
-    setInvoiceData({...invoiceData , items4: values});
-  };
+
  const addFields = () => {
-  // e.preventDefault();
     setInvoiceData((prevState) => ({
       ...prevState,
       items: prevState.items ? [...prevState.items, { product: '', qte: '', unite: '', prix: '', tva: '', montant: '',montant2: '', date2: '',montantHT:'' ,montantHT2:'' ,remise:'',montantPourcent:'',montantHTPourcent:'',remisePourcent:''}] : [{ product: '', qte: '', unite: '', prix: '', tva: '', montant: '', date2: '',montantHT:'',remise:'',montantPourcent:'',montantHTPourcent:'',remisePourcent:''}]
     }));
   };
   const addTitre=()=>{
-   // e.preventDefaulf();
    setInvoiceData((prevState)=> ({
       ...prevState,
       items2 : prevState.items2 ? [...prevState.items2,{title:'',}] :[{title:'',}]
@@ -291,7 +265,7 @@ setInvoiceData((prevState)=>({...prevState , values}))
         newTotal +=   subTotal2;
       }
  
-      setTotal(newTotal);
+      setTotal(newTotal.toFixed(2));
 
   
     };
@@ -375,17 +349,18 @@ setInvoiceData((prevState)=>({...prevState , values}))
         setNomFacture(updatedNomFacture);
       }, [showSansRemise,showPourcentageTotal,showDeviseTotal,showPourcentageTab,showDeviseTab]);
          /*****Calcule acompte en devise selon 5 modéle de facture */  
-         const acompteEnDeviseFunction = () => {
+       /*  const acompteEnDeviseFunction = () => {
           let newAcompteDevise = 0;
           
           // Condition 1 
           if (showAcompte) {
-            newAcompteDevise  += total - (total - (total * (Acompte.slice(0, -1) / 100)))
+          //  newAcompteDevise  += total - (total - (total * (Acompte.slice(0, -1) / 100)))
+          newAcompteDevise  += total - (total - (total * (Acompte.slice(0, -1) / 100)))
           }
       
           // Condition 2 
           if (showAcompteDevise_Tab)  {
-            newAcompteDevise  += total - (total - (total * (Acompte1.slice(0, -1) / 100)))
+            newAcompteDevise  += total - (total - (total * (Acompte1.slice(0, -1)/ 100)))
           }
       
           // Condition 3
@@ -396,7 +371,7 @@ setInvoiceData((prevState)=>({...prevState , values}))
       
           // Condition 4  
           if (showAcompteDevise_Total) {
-            newAcompteDevise   += total - (total - (total * (Acompte3.slice(0, -1) / 100)))
+            newAcompteDevise   += total - (total - (total * (Acompte3.slice(0, -1)/ 100)))
           }
       
           // Condition 5 
@@ -413,12 +388,14 @@ setInvoiceData((prevState)=>({...prevState , values}))
         }, [showAcompte,showAcompteDevise_Tab,showAcomptePourcent_Tab,showAcompteDevise_Total,showAcomptePourcent_Total
           ,total,Acompte,Acompte1,Acompte2,Acompte3,Acompte4]);
 
-
+*/
     
     /*********************/
 const dispatch = useDispatch()
   const clientfs = useSelector(state=> state.clientfs)
+  const clientAdmin = useSelector(state=> state.clientAdmin)
   const products = useSelector(state=> state.products)
+  const productAdmin = useSelector(state=> state.productAdmin)
   const token = useSelector(state => state.token)
   const factureUpdate = useSelector((state) => state.factureUpdate)
   const {
@@ -435,22 +412,36 @@ const dispatch = useDispatch()
     success: successCreate,
     facture: createdFacture,
   } = factureCreate
-    
+  const auth = useSelector(state => state.auth)
+  const {user, isAdmin} = auth
 
 
 
 
    useEffect(() => {
   //console.log(client)
-
-  fetchAllClientf(token).then(res =>{
+if(user.role==0)
+{  fetchAllClientf(token).then(res =>{
     dispatch(dispatchGetAllClientf(res))
+})}
+if(user.role==1)
+{
+  fetchAllClientAdmin(token).then(res =>{
+    dispatch(dispatchGetAllClientAdmin(res))
 })
-fetchAllProduct(token).then(res =>{
+}
+if(user.role==0) {fetchAllProduct(token).then(res =>{
   dispatch(dispatchGetAllProduct(res))
-})
+})}
+
+
+if(user.role==1) {fetchAllProductAdmin(token).then(res =>{
+  dispatch(dispatchGetAllProductAdmin(res))
+})}
   if (successUpdate) {
+    alert("Il faut sélectionner le type de facture dans la liste à droite.");
       dispatch({ type: FACTURE_UPDATE_RESET})
+
       if(showButtonSansRemise)
 {navigate(`/inv/print/${facture._id}`);}  
       if(showButtonAvecRemiseTotalPourcent){
@@ -470,6 +461,7 @@ fetchAllProduct(token).then(res =>{
 else{ 
 if (!facture.num || facture._id !== id){
   dispatch(listFactureDetails(id))
+  //alert("Sélectionnez le type de facture dans la liste à droite.");
 }          
       
   else {
@@ -814,42 +806,54 @@ const submitHandler= (e) => {
         }
       };*/}
       useEffect(() => {
-        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
+        if (user.role === 1) {
+          const selectedClient = clientAdmin.find((client) => client.Firstname + ' ' + client.Surname === clientf);
       
-        if (selectedClient) {
-          setEmail(selectedClient.Email);
-        } else {
-          setEmail('');
+          if (selectedClient) {
+            setEmail(selectedClient.Email);
+            setAdresse(selectedClient.Address);
+            setCodePostale(selectedClient.Codepostal);
+          } else {
+            setEmail('');
+            setAdresse('');
+            setCodePostale('');
+          }
         }
-      }, [clientf, clientfs]);
-
+      }, [clientf, clientAdmin, user.role]);
+      
       useEffect(() => {
-        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
+        if (user.role === 0) {
+          const selectedClient = clientfs.find((client) => client.Firstname + ' ' + client.Surname === clientf);
       
-        if (selectedClient) {
-          setAdresse(selectedClient.Address);
-        } else {
-          setAdresse('');
+          if (selectedClient) {
+            setEmail(selectedClient.Email);
+            setAdresse(selectedClient.Address);
+            setCodePostale(selectedClient.Codepostal);
+          } else {
+            setEmail('');
+            setAdresse('');
+            setCodePostale('');
+          }
         }
-      }, [clientf, clientfs]);
-
-      useEffect(() => {
-        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
-      
-        if (selectedClient) {
-          setCodePostale(selectedClient.Codepostal);
-        } else {
-          setCodePostale('');
-        }
-      }, [clientf, clientfs]);
-
+      }, [clientf, clientfs, user.role]);
+   console.log(facture)
+console.log(facture.email)
 return (
 <div style={{ fontFamily: 'Whyte'}} ref={componentRef}>
     <Link to="/inv/facture" style={{ textDecoration: "none" }}>
     <button className="go_back" style={{marginTop:"80Px"}}>
-    <i className="fas fa-long-arrow-alt-left"></i> Go Back
+    <i className="fas fa-long-arrow-alt-left"></i> Liste des factures
     </button>
     </Link>
+    <Typography 
+variant="h6" gutterBottom 
+style={{marginLeft: "140px",
+ textShadow: "2px 2px 5px green" ,
+  fontSize: "42px",
+ marginTop :"px",}}
+>
+  Facturation
+</Typography>
       <form onSubmit={submitHandler}>
       <table>
         <tbody>
@@ -878,14 +882,25 @@ return (
       ))}
     </select>
       <p>Choix sélectionné : {clientf.Email}</p>*/}
-      <select style={{ width: "200px", height: "50px" }} onChange={(e) => setClientf(e.target.value)} value={clientf}>
+{ user.role ===0 &&     <select style={{ width: "200px", height: "50px" }} onChange={(e) => setClientf(e.target.value)} value={clientf}>
   {clientfs.map((clientf) => (
     <option key={clientf._id}>
       {clientf.Firstname} {clientf.Surname}
 
     </option>
   ))}
-</select>
+</select>}
+
+
+{ user.role ===1 &&     <select style={{ width: "200px", height: "50px" }} onChange={(e) => setClientf(e.target.value)} value={clientf}>
+  {clientAdmin.map((clientf) => (
+    <option key={clientf._id}>
+      {clientf.Firstname} {clientf.Surname}
+
+    </option>
+  ))}
+</select>}
+
 
 {/*clientfs.map((client) => {
   if (client.Firstname=== clientf) {
@@ -894,20 +909,15 @@ return (
   return null;
 })*/}
 {/*displayClientEmail()*/}
-
-<p>{email}</p>
- <p>{adresse}</p>
- <p>{codePostale}</p>
+<p>Client : {clientf}</p>
+ <p>{facture.email}</p>
+ <p>{facture.adresse}</p>
+ <p>{facture.codePostale}</p>
+ 
           </td>
 	         <td>    
             
-            <Typography 
-            variant="h6" gutterBottom 
-            style={{marginLeft: "540px",
-             textShadow: "2px 2px 5px green" ,
-              fontSize: "42px",
-             marginTop :"10px",}}> 
-              FACTURE</Typography>
+
               </td>
 	           </tbody>
              </table>
@@ -1091,7 +1101,7 @@ return (
           </table>
 		  
 	</td>
-    <td> <div style={{marginBottom:"220Px" , position:"relative"}}>
+    <td> <div style={{ marginBottom:"220Px" , position:"relative"}}>
           <h1>Message(0/3000)</h1>
         <TextareaAutosize
       maxRows={4}
@@ -1106,16 +1116,21 @@ return (
         </td>
       </tbody>
     </table> 
+    
 {showSansRemise &&<div style={{marginLeft:"450px" , color: "green"}} >{nomFacture}</div>}
 {showPourcentageTotal &&<div style={{marginLeft:"450px" , color: "green"}}>{nomFacture}</div>}   
  {showDeviseTotal && <div style={{marginLeft:"450px" , color: "green"}}>{nomFacture}</div>}
 {showPourcentageTab && <div style={{marginLeft:"450px" , color: "green"}}>{nomFacture}</div>} 
 {showDeviseTab && <div style={{marginLeft:"450px" , color: "green"}}>{nomFacture}</div>}
 <Divider style={{marginBottom:"px" ,marginTop:"px"}}/>
-          <table>
+          <table style={{position :"relative" ,
+          zIndex: "9999", backgroundColor:"white", marginTop:"6%"}}
+          className="responsive-table"
+
+          >
             <thead>
               <tr>
-                <th>Produit</th>
+                <th >Produit</th>
                 {showDate &&(<th>Date</th>)}
                 {showqte && (<th>Qté</th>)}
                 {showunite &&(<th>Unité</th>)}
@@ -1136,15 +1151,24 @@ return (
              {invoiceData.items && invoiceData.items.map((itemField,index) =>{
               return(
                <tr key={index}>
-                <td>
-                  <select 
+             <td>
+                 {user.role==0 && <select 
                   name="product"
                   style={{width:"200px",height:"50px"}} 
                    onChange={(e)=>handleChange(index,e)}
                     value={itemField.product}>
                     {products.map((product)=>
                     (<option key={product._id} > {product.name}</option>))}
-                  </select>
+                  </select>}
+
+                  {user.role==1 && <select 
+                  name="product"
+                  style={{width:"200px",height:"50px"}} 
+                   onChange={(e)=>handleChange(index,e)}
+                    value={itemField.product}>
+                    {productAdmin.map((product)=>
+                    (<option key={product._id} > {product.name}</option>))}
+                  </select>}
                </td>
            {showDate &&(
              <td>				  
@@ -1364,168 +1388,200 @@ return (
               </tbody>
              </table> 
              <table>
-             <tbody>
-             {invoiceData.items2 && invoiceData.items2.map((itemField2,index) =>{
-              return(<tr key={index}><td>
-      <TextField
-       autoFocus
-       margin=""
-       id=""
-       name="title"
-       label=""
-       placeholder='Titre'
-       type="text"
-       value={itemField2.title}
-       onChange={(e)=>handleChangeTitre(index,e)}
-       fullWidth
-       variant="outlined"
-      style={{width:"820px"}}
-     />
-     </td>
-     <Button  aria-label="delete" size="small" onClick={() => removeTitre(index)} 
-             style={{marginLeft:"90px"}}>
+  <tbody>
+    {invoiceData.items2 && invoiceData.items2.map((itemField2, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <TextField
+              autoFocus
+              margin=""
+              id=""
+              name="title"
+              label=""
+              placeholder="Titre"
+              type="text"
+              value={itemField2.title}
+              onChange={(e) => handleChangeTitre(index, e)}
+              fullWidth
+              variant="outlined"
+              style={{ width: "100%" }}
+            />
+          </td>
+          <td>
+            <Button aria-label="delete" size="small" onClick={() => removeTitre(index)}>
               <IconButton aria-label="delete" size="small">
-              <DeleteIcon fontSize="small" /></IconButton></Button>
-          <td>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
           </td>
-          </tr>)})} 
-        </tbody>
-       </table>
-       <table>
-        <tbody>
-        {invoiceData.items3 && invoiceData.items3.map((itemField3,index) =>{
-          return(
-          <tr key={index}>
-          <td>
-          <TextareaAutosize
-            maxRows={4}
-            aria-label="Text"
-            name="champ"
-            placeholder="Champ text"
-            //defaultValue="Text"
-            variant="outlined"
-            value={itemField3.champ}
-            onChange={(e)=>handleChangeChamp(index,e)}
-            style={{width: "910px" ,height:"200px"}}/>
-          </td>
-          <Button  aria-label="delete" size="small" onClick={() => removeChamptext(index)}>
-              <IconButton aria-label="delete" size="small" style={{marginLeft:"5px"}}>
-             <DeleteIcon fontSize="small" /></IconButton>
-           </Button>
-          <td>
-           </td>
-          </tr>)})} 
-        </tbody>
-       </table>
-       <table>
-        <tbody>
-        {invoiceData.items4 && invoiceData.items4.map((itemField4,index)  =>{
-             return( 
-          <tr key={index}>
-          <td>
-          <h6 style={{width:"200px"}}>Sous-total(Montant Final)</h6>
-          </td>
-          <td>
-         {showResumeFacture && <h6 name="sous" style={{marginLeft:"590px", width:"90Px"}}>{total}</h6>}
-         {showSansRemise && <h6 name="sous" style={{marginLeft:"590px", width:"90Px"}}>{total}</h6>}
-         {showResumeFacture2 && <h6 name="sous" style={{marginLeft:"590px", width:"90Px"}}>{total}</h6>}
-         {showResumeFactureDevise && <h6 name="sous" style={{marginLeft:"590px", width:"90Px"}}>{total}</h6>}
-         {showResumeFacturePourcent && <h6 name="sous" style={{marginLeft:"590px", width:"90Px"}}>{total}</h6>}
-          </td>
-          <td>
-         <Button  aria-label="delete" size="small" onClick={() => removeSoustotal(index)}>
-              <IconButton aria-label="delete" size="small" style={{marginLeft:"52px"}}>
-              <DeleteIcon fontSize="small" /></IconButton></Button>
-          </td>
-          </tr>)})} 
-        </tbody>
-        </table>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
 
-           
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
+<table>
+  <tbody>
+    {invoiceData.items3 && invoiceData.items3.map((itemField3, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <TextareaAutosize
+              maxRows={4}
+              aria-label="Text"
+              name="champ"
+              placeholder="Champ text"
+              variant="outlined"
+              value={itemField3.champ}
+              onChange={(e) => handleChangeChamp(index, e)}
+              style={{ width: "100%", height: "200px" }} 
+            />
+          </td>
+          <td>
+            <Button aria-label="delete" size="small" onClick={() => removeChamptext(index)}>
+              <IconButton aria-label="delete" size="small" style={{ marginLeft: "5px" }}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
 
-                {showDeviseTotal && (<td>
-              <Typography variant="p">
-               Remise en devise
-               </Typography></td>)}
-          
-        {showDeviseTotal && (<td>
-          <TextField
-           id="outlined-basic"
-           label=""
-           value={remisetotal2}
-           onChange={(e) => setRemisetotal2(e.target.value)}
-           variant="outlined" 
-           placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-         </table>
-              </div>
+<table>
+  <tbody>
+    {invoiceData.items4 && invoiceData.items4.map((itemField4, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <h6 style={{ width: "100%" }}>Sous-total(Montant Final)</h6>
+          </td>
+          <td>
+            {/* Adjust the styling based on screen size */}
+            <h6 name="sous" style={{ marginLeft: "60%", width: "100px" }}>
+              {total}
+            </h6>
+          </td>
+          <td>
+            <Button aria-label="delete" size="small" onClick={() => removeSoustotal(index)}>
+              <IconButton aria-label="delete" size="small" style={{ marginLeft: "5%" }}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
 
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
-      {showPourcentageTotal &&(<td>
-        <Typography variant="p" >
-               Remise en  pourcentage
-               </Typography></td>)}
-      {showPourcentageTotal &&(<td>
-          <TextField
-           id="out"
-           label=""
-           value={remisetotal}
-           onChange={(e) => setRemisetotal(e.target.value)}
-         //  variant="outlined" 
-          // placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-         </table>
-              </div>
 
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
- {showSommeDevise &&( <td>
-        <Typography variant="p" >
-             Remise en devise
-               </Typography></td>)}   
-   {showSommeDevise &&(<td> 
-          <TextField
-           id="devise"
-           label=""
-           value={totalRemise}
-           //variant="outlined" 
-           //placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-   </table>
-              </div>
-              <div style={{marginLeft:"520px"}}> 
-            <table>
-               <tbody>
- {showSommePourcent && (<td>
-        <Typography variant="p" gutterBottom Conditions de paiement>
-           Remise en devise 
-               </Typography></td>)}  
-        
- {showSommePourcent &&
-  (<td><TextField
-           id="pourCent"
-           label=""
-            value={(subTotal - subTotal2).toFixed(2)}
-            //setRemiseParLignePourcent(subTotal-subTotal2)
-           placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-           </td>)}
-         </tbody>
+        <div style={{marginLeft: "5%", marginRight: "5%"}}> {/* Add margin for both sides */}
+  <table>
+    <tbody>
+      {showDeviseTotal && (
+        <tr> {/* Use a <tr> to wrap the <td> elements */}
+          <td>
+            <Typography variant="p">
+              Remise en devise
+            </Typography>
+          </td>
+          <td>
+            <TextField
+              id="outlined-basic"
+              label=""
+              value={remisetotal2}
+              onChange={(e) => setRemisetotal2(e.target.value)}
+              variant="outlined"
+              placeholder="remise"
+            />
+          </td>
+        </tr>
+      )}
+    </tbody>
   </table>
-              </div>
-          <div className={styles.invoiceSummary}>
+</div>
+
+<div style={{marginLeft: "5%", marginRight: "5%"}}>
+  <table>
+    <tbody>
+      {showPourcentageTotal && (
+        <tr>
+          <td>
+            <Typography variant="p">
+              Remise en pourcentage
+            </Typography>
+          </td>
+          <td>
+            <TextField
+              id="out"
+              label=""
+              value={remisetotal}
+              onChange={(e) => setRemisetotal(e.target.value)}
+              style={{width: "100%"}} 
+            />
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+<div style={{marginLeft: "5%", marginRight: "5%"}}>
+  <table>
+    <tbody>
+      {showSommeDevise && (
+        <tr>
+          <td>
+            <Typography variant="p">
+              Remise en devise
+            </Typography>
+          </td>
+          <td>
+            <TextField
+              id="devise"
+              label=""
+              value={totalRemise}
+              style={{width: "100%"}}
+            />
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+<div style={{marginLeft: "5%", marginRight: "5%"}}>
+  <table>
+    <tbody>
+      {showSommePourcent && (
+        <tr>
+          <td>
+            <Typography variant="p" gutterBottom>
+              Remise en devise
+            </Typography>
+          </td>
+          <td>
+            <TextField
+              id="pourCent"
+              label=""
+              value={(subTotal - subTotal2).toFixed(2)}
+              placeholder="remise"
+              style={{width: "100%"}}
+            />
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
+
+          <div className={styles.invoiceSummary} >
           <div className={styles.summary}>Résumé de la facture</div>
           <div className={styles.summaryItem}>
           <p>Total HT:</p>
@@ -1571,11 +1627,7 @@ return (
             <div className={styles.summaryItem}>
 {showResumeFacturePourcent &&( <p>Total dû </p>)}
 {showResumeFacturePourcent && typeof subTotal2 === 'number'&&(<h4 name="subTotal" style={{color: "grey", fontSize: "18px", lineHeight: "8px"}}>{total}</h4>)}
-
-         
-            </div>
-          
-
+</div>
             <div className={styles.summaryItem}>
         {showAcompte &&(<p>Acompte </p>)}  
         {showAcompte &&(  
@@ -1598,8 +1650,12 @@ return (
            lineHeight: "8px",
            marginLeft:"60px"
            }}>
-    {Acompte && Acompte.slice ? acompteEnDevise : ""}</h4>)}
-     
+ {/*Acompte && Acompte.slice ? acompteEnDevise : ""*/}
+ {Acompte && Acompte.slice ? (subTotal - (subTotal - (subTotal * (Acompte.slice(0, -1) / 100)))).toFixed(2) : ""}
+
+ 
+ </h4>)}
+*  
        </div>
             <div className={styles.summaryItem}>
         {showAcompteDevise_Tab &&(<p>Acompte</p>)}  
@@ -1623,7 +1679,10 @@ return (
            lineHeight: "8px",
            marginLeft:"60px"
            }}>
-             {Acompte1 && Acompte1.slice ? acompteEnDevise : ""}</h4>)}
+             {/*Acompte1 && Acompte1.slice ? acompteEnDevise : ""*/}
+             {Acompte1 && Acompte1.slice ? (subTotal - (subTotal - (subTotal * (Acompte1.slice(0, -1) / 100)))).toFixed(2) : ""}
+
+             </h4>)}
 
             </div>
             <div className={styles.summaryItem}>
@@ -1648,7 +1707,9 @@ return (
            lineHeight: "8px",
            marginLeft:"60px"
            }}>
-                       {Acompte2 && Acompte2.slice ? acompteEnDevise : ""}
+                       {/*Acompte2 && Acompte2.slice ? acompteEnDevise : ""*/}
+  {Acompte2 && Acompte2.slice ? (subTotal - (subTotal - (subTotal * (Acompte2.slice(0, -1) / 100)))).toFixed(2) : ""}
+         
 
   </h4>)}
 
@@ -1676,7 +1737,8 @@ return (
            marginLeft:"60px"
            }}>
 
-{Acompte3 && Acompte3.slice ? acompteEnDevise: ""}
+{/*Acompte3 && Acompte3.slice ? acompteEnDevise: ""*/}
+{Acompte3 && Acompte3.slice ? (subTotal - (subTotal - (subTotal * (Acompte3.slice(0, -1) / 100)))).toFixed(2) : ""}
 
 </h4>)}
 
@@ -1703,8 +1765,9 @@ return (
            lineHeight: "8px",
            marginLeft:"60px"
            }}>
-                      {Acompte4 && Acompte4.slice ? acompteEnDevise: ""}
- 
+                      {/*Acompte4 && Acompte4.slice ? acompteEnDevise: ""*/}
+                      {Acompte4 && Acompte4.slice ? (subTotal - (subTotal - (subTotal * (Acompte4.slice(0, -1) / 100)))).toFixed(2) : ""}
+
 </h4>)}
 
 
@@ -1931,7 +1994,11 @@ setShowButtonAvecRemiseTabDevise={setShowButtonAvecRemiseTabDevise}
        </tbody>
        </table> 
        
-    <button type="submit" className={styles.but}> Enregistrez </button>
+    <Button type="submit" 
+    
+    className={styles.but}>
+      
+       Enregistrez </Button>
 {  /*  
        {showButtonSansRemise && (<Link to={`/inv/print/${facture._id}`} style={{ textDecoration: "none" }}>
     <button className={styles.but2}  style={{marginTop:"60Px"}}>

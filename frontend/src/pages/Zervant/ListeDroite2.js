@@ -1,5 +1,6 @@
 import  {React, useState} from 'react';
 import List from '@mui/material/List';
+import { makeStyles } from '@material-ui/core/styles';
 import {Typography} from "@material-ui/core";
 import FormLabel from '@mui/material/FormLabel';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -19,7 +20,13 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { fabClasses } from '@mui/material';
-
+const useStyles = makeStyles((theme) => ({
+  responsiveList: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%', // Adjust the width for smaller screens
+    },
+  },
+}));
 
 
 export default function NestedList({invoiceData,
@@ -38,6 +45,8 @@ export default function NestedList({invoiceData,
   setShowButtonAvecRemiseTotalDevise,setShowButtonAvecRemiseTabDevise,setShowButtonAvecRemiseTabPourcent ,
   setShowMontantOriginaleHT})
    {
+    const classes = useStyles();
+
   const [open2, setOpen2] = useState(true);
   const [montrer, setMontrer] = useState(false);
   const [open5, setOpen5] = useState(false);
@@ -67,6 +76,26 @@ export default function NestedList({invoiceData,
        setShowPourcentageTab(false);
        setShowDeviseTab(false);
       //setShowTotalHT(false)
+
+
+      setShowSommeDevise(false);
+      setShowResumeFacturePourcent(false);
+      setShowResumeFactureDevise(false);
+      setShowTotalHTPourcent_Tab(false);
+      setShowTotalHT_Tab(false);
+      setShowTotalHT(false);
+      setShowTotalHTPourcent(false);
+      setShowResumeFacture2(false);
+      setShowResumeFacture(false);
+      setShowSansRemise(false);
+      setShowAcomptePourcent_Total(false);
+      setShowAcompteDevise_Total(false);
+      setShowAcomptePourcent_Tab(false);
+      setShowAcompteDevise_Tab(false);
+      setShowButtonAvecRemiseTotalPourcent(false);
+      setShowButtonAvecRemiseTotalDevise(false);
+      setShowButtonAvecRemiseTabPourcent(false);
+      setShowButtonAvecRemiseTabDevise(false)
     } else {
       setMontrerHT(true);
       setShowSansRemise(true);
@@ -84,6 +113,27 @@ export default function NestedList({invoiceData,
       setShowPourcentageTotal(false);
       //setShowTotalHT(true);
 
+
+      setShowSommeDevise(false);
+      setShowResumeFacturePourcent(false);
+      setShowResumeFactureDevise(false);
+      setShowTotalHTPourcent_Tab(false);
+      setShowTotalHT_Tab(false);
+      setShowTotalHT(false);
+      setShowTotalHTPourcent(false);
+      setShowResumeFacture2(false);
+      setShowResumeFacture(false);
+      //setShowSansRemise(false);
+      setShowAcomptePourcent_Total(false);
+      setShowAcompteDevise_Total(false);
+      //setShowAcompte(false);
+      setShowAcomptePourcent_Tab(false);
+      setShowAcompteDevise_Tab(false);
+      //setMontrerHT(false);
+      setShowButtonAvecRemiseTotalPourcent(false);
+      setShowButtonAvecRemiseTotalDevise(false);
+      setShowButtonAvecRemiseTabPourcent(false);
+      setShowButtonAvecRemiseTabDevise(false)
 
 
     }
@@ -352,8 +402,10 @@ const handleClick8 = () => {
     <>
       <List
   sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper',display: "flex-",position: "absolute",
-  top: "100Px",left: "1000px", width:"250px",right: "0",height:"1200px", borderRadius: "10px", overflow: "hidden", }}aria-labelledby=""
-  style={{backgroundColor:"#8FBC8F"}}>
+  top: "100Px",left: "1000px", width:"250px",right: "0",height:"1800px", borderRadius: "10px", overflow: "hidden", }}aria-labelledby=""
+  style={{backgroundColor:"#8FBC8F"}}
+  className={classes.responsiveList}
+  >
 <ListItemButton onClick={handleClick2}>
   <ListItemIcon>
     <SettingsIcon/>
@@ -414,16 +466,13 @@ const handleClick8 = () => {
            style={{marginLeft:"30px"}}/>
          </List>
       </Collapse>
-         <ListItemButton onClick={handleClick8}>
+      <div style={{color:"white",marginTop :"100%"}}>Choisissez le type de facture</div>
+
+         <ListItemButton onClick={handleClick8}  style={{marginTop :"0%"}}>
            <input onChange={handleMontrer}    type="checkbox"/>
          <ListItemText
-             primary={
-               <Typography variant="body1" style={{ color: "white" }}>
-                     Remise
-                       </Typography>
-  }
-  primaryTypographyProps={{ style: { color: "white" } }}
-  checked={true} // Définir cette propriété à true pour cocher l'élément initialement
+             primary=" Remise"
+ style={{ color: "white" } }
 />
      {open8 ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>

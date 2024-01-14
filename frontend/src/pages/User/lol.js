@@ -17,26 +17,20 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
-const axiosInstance = axios.create({
-        baseURL : process.env.REACT_APP_SERVER_URL,
-  });
+
 const initialState = {
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     cf_password: '',
-
-
-
-
 }
 
 function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
+        <Link color="inherit" /*href="https://mui.com/"*/>
             GreenLinks
         </Link>{' '}
         {new Date().getFullYear()}
@@ -50,7 +44,7 @@ const theme = createTheme();
 export default function SignUp() {
 
     const [showPassword, setShowPassword] = useState(false)
-   // const [picLoading,setPicLoading]= useState(false);
+
     const handleClick = () =>{
         setShowPassword(!showPassword)
     }
@@ -60,14 +54,9 @@ export default function SignUp() {
     }
 
     const [user, setUser] = useState(initialState)
-   //const [lirstName, setLirstName] = useState()
-   //const [email, setEmail] = useState()
-  //const [password, setPassword] = useState()
-   // const [pic, setPic] = useState()
-  //const [cf_password, setCf_password] = useState()
 
     const { firstName, lastName, email, password, cf_password} = user
-      //pic=setPix
+
     const handleChangeInput = e =>{
         const { name, value } = e.target
         setUser({...user, [name]:value})
@@ -75,9 +64,7 @@ export default function SignUp() {
 
 
    const handleSubmit = async(event) => {
-
         event.preventDefault();
-     //setPicLoading(true)
         if(isEmpty(firstName) || isEmpty(lastName) || isEmpty(password)){
         toast.error("Please fill in all fields.", {
             position: "top-right",
@@ -89,7 +76,6 @@ export default function SignUp() {
             progress: undefined,
             theme: "colored",
         });
-       //setPicLoading(false);
         return setUser({...user, err: "Please fill in all fields.", success: ''})
         }
 
@@ -149,70 +135,16 @@ export default function SignUp() {
                         progress: undefined,
                         theme: "colored",
                     });
-                   localStorage.setItem("userInfo", JSON.stringify(data));
-       // setPicLoading(false)
-
-               //   console.log(pic)
-
-
-                }
+                localStorage.setItem("userInfo", JSON.stringify(data))}
             catch (err) {
                         err.response.data.msg &&
             setUser({...user, err:err.response.data.msg, success:''})
-            console.log(err)
-          // setPicLoading(false)
+            console.log(err)}};
 
 
 
-   }
-
-    };
 
 
-  /* const postDetails = (pics) => {
-        //setPicLoading(true);
-        if (pics === undefined) {
-          toast({
-            title: "Please Select an Image!",
-            status: "warning",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom",
-          });
-          return;
-        }
-        console.log(pics);
-        if (pics.type === "image/jpeg" || pics.type === "image/png") {
-          const data = new FormData();
-          data.append("file", pics);
-          data.append("upload_preset", "chat-app");
-          data.append("cloud_name", "piyushproj");
-          fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
-            method: "post",
-            body: data,
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              setPix(data.url.toString());
-              console.log(data.url.toString());
-              setPicLoading(false);
-            })
-            .catch((err) => {
-              console.log(err);
-              setPicLoading(false);
-            }); //let {a}= user ;a.pic
-        } else {
-          toast({
-            title: "Please Select an Image!",
-            status: "warning",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom",
-          });
-          setPicLoading(false);
-          return;
-        }
-      };*/
     return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -327,7 +259,6 @@ export default function SignUp() {
                         }}
                         />
 
-
                         <Button
                             type="submit"
                             fullWidth
@@ -338,7 +269,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container>
                         <Grid item>
-                        <Link href="/" variant="body2">
+                        <Link href="/signin" variant="body2">
                             {"Vous avez un compte ? S'identifier"}
                         </Link>
                         </Grid>
@@ -350,4 +281,4 @@ export default function SignUp() {
             </Grid>
         </ThemeProvider>
     );
-                    }
+}

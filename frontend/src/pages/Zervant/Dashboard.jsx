@@ -2,31 +2,19 @@ import { useEffect ,useState} from 'react';
 import Chart from 'chart.js/auto'
 import MetaData from './MetaData';
 import moment from 'moment'
-
 import { Doughnut, Line, Pie, Bar } from 'react-chartjs-2';
-//import { getAdminProducts } from '../../actions/productAction';
 import { useSelector, useDispatch } from 'react-redux';
-//import { getAllOrders } from '../../actions/orderAction';
-//import { getAllUsers } from '../../actions/userAction';
 import { categories } from './utils/constants';
-//import MetaData from '../Layouts/MetaData';
 import {dispatchGetAllFacture, fetchAllFacture } from '../../redux/actions/servantActions/factureAction';
 import {dispatchGetAllProduct, fetchAllProduct } from '../../redux/actions/servantActions/productAction';
 import {dispatchGetAllClientf, fetchAllClientf, listclientfs } from '../../redux/actions/servantActions/clientfAction';
 import {dispatchGetAllFactureAdmin, fetchAllFactureAdmin } from '../../redux/actions/servantActions/factureAdminAction';
 import { dispatchGetAllClientAdmin, fetchAllClientAdmin } from '../../redux/actions/servantActions/clientAdminAction';
 import { dispatchGetAllProductAdmin, fetchAllProductAdmin } from '../../redux/actions/servantActions/productAdminAction';
-
-
-
-
 const MainData = () => {
 
     const dispatch = useDispatch();
 
-  //  const { products } = useSelector((state) => state.products);
-    //const { orders } = useSelector((state) => state.allOrders);
-    //const { users } = useSelector((state) => state.users);
     const factures = useSelector(state=> state.factures)
     const facturesAdmin = useSelector(state=> state.facturesAdmin)
     const products = useSelector(state=> state.products)
@@ -39,53 +27,50 @@ const MainData = () => {
     const auth = useSelector(state => state.auth)
     const {user, isAdmin} = auth
 
-    let outOfStock = 0;
-   /* products?.forEach((item) => {
-        if (item.stock === 0) {
-            outOfStock += 1;
-        }
-    });*/
-
     useEffect(() => {
-
-        if(user.role ==1) {
-        fetchAllFactureAdmin(token).then(res =>{
-            dispatch(dispatchGetAllFactureAdmin(res))
-        })
-        fetchAllProductAdmin(token).then(res =>{
-            dispatch(dispatchGetAllProductAdmin(res))
-        })
-        fetchAllClientAdmin(token).then(res =>{
-            dispatch(dispatchGetAllClientAdmin(res))
-        })
-    }
-        fetchAllFacture(token).then(res =>{
-            dispatch(dispatchGetAllFacture(res))
-        })
-        fetchAllProduct(token).then(res =>{
-            dispatch(dispatchGetAllProduct(res))
-        })
-        
-        fetchAllClientf(token).then(res =>{
-            dispatch(dispatchGetAllClientf(res))
-        })
-      
-        //dispatch(listFactureDetails(id))
-
-        //dispatch(getAdminProducts());
-        //dispatch(getAllOrders());
-        //dispatch(getAllUsers());
-    }, [/*dispatch*/]);
+      const fetchData = async () => {
+          try {
+              if (user.role === 1) {
+                  const [factureAdmin, productAdmin, clientAdmin] = await Promise.all([
+                      fetchAllFactureAdmin(token),
+                      fetchAllProductAdmin(token),
+                      fetchAllClientAdmin(token)
+                  ]);
+                 
+                  dispatch(dispatchGetAllFactureAdmin(factureAdmin));
+                  dispatch(dispatchGetAllProductAdmin(productAdmin));
+                  dispatch(dispatchGetAllClientAdmin(clientAdmin));
+              } else if (user.role === 0) {
+                  const [facture, product, client] = await Promise.all([
+                      fetchAllFacture(token),
+                      fetchAllProduct(token),
+                      fetchAllClientf(token)
+                  ]);
+                
+                  dispatch(dispatchGetAllFacture(facture));
+                  dispatch(dispatchGetAllProduct(product));
+                  dispatch(dispatchGetAllClientf(client));
+              }
+          } catch (error) {
+              console.error("Une erreur s'est produite lors de la récupération des données :", error);
+          }
+      };
+  
+      fetchData();
+  }, [user.role, token, dispatchGetAllFacture, dispatchGetAllProduct, dispatchGetAllClientf, dispatchGetAllFactureAdmin, dispatchGetAllProductAdmin, dispatchGetAllClientAdmin]);
+  
 
     /*let totalAmount = orders?.reduce((total, order) => total + order.totalPrice, 0);*/
     const totalSum = factures.reduce((acc, cur) => acc + cur.total, 0);
-console.log(totalSum)
-
+///console.log(totalSum)
+console.log(factures)
+console.log(facturesAdmin)
+console.log(productAdmin)
 const totalSumAdmin = facturesAdmin.reduce((acc, cur) => acc + cur.total, 0);
 console.log(totalSum)
 
-let devise = factures.reduce((acc,cur)=> cur.saveDevise,0)
-let deviseAdmin= facturesAdmin.reduce((acc,cur)=> cur.saveDevise,0)
+let devise = factures.saveDevise
+let deviseAdmin= facturesAdmin.SaveDevise
 
     const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
     const date = new Date();
@@ -239,21 +224,7 @@ const enRetardMoins30JoursAdmin = facturesAdmin.filter((factureAdmin) => {
     return daysDiff > 0 && daysDiff <= 30;
   });
   const [data, setData] = useState([]);
-  useEffect(() => {
-    if (user.role === 0) {
-      setData([
-        nonEchues.length,
-        enRetardMoins30Jours.length,
-        enRetardPlus30Jours.length,
-      ]);
-    } else {
-      setData([
-        nonEchuesAdmin.length,
-        enRetardMoins30JoursAdmin.length,
-        enRetardPlus30JoursAdmin.length,
-      ]);
-    }
-  }, [user.role, nonEchues, enRetardMoins30Jours, enRetardPlus30Jours, nonEchuesAdmin, enRetardMoins30JoursAdmin, enRetardPlus30JoursAdmin]);
+  
   
 
 
@@ -309,7 +280,24 @@ const doughnutStateAdmin = {
       }
     }
   };
-
+  useEffect(() => {
+    if (user.role === 0) {
+      setData([
+        nonEchues.length,
+        enRetardMoins30Jours.length,
+        enRetardPlus30Jours.length,
+      ]);
+    } else
+   if (user.role === 1) {
+    {
+      setData([
+        nonEchuesAdmin.length,
+        enRetardMoins30JoursAdmin.length,
+        enRetardPlus30JoursAdmin.length,
+      ]);
+    }}
+  }, [user.role, token,nonEchues,enRetardMoins30Jours,enRetardPlus30Jours,
+    nonEchuesAdmin,enRetardMoins30JoursAdmin,enRetardPlus30JoursAdmin]);
   return (
         <>
             <MetaData title="Facture Dashboard | Flipkart" />
@@ -317,7 +305,9 @@ const doughnutStateAdmin = {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-6" style={{marginTop:"60px"}}>
            <div className="flex flex-col bg-purple-600 text-white gap-2 rounded-xl shadow-lg hover:shadow-xl p-6">
               <h4 className="text-gray-100 font-medium">Montant total des ventes</h4>
-                <h2 className="text-2xl font-bold">{totalSum} {devise}</h2>
+               {user.role==1 && <h2 className="text-2xl font-bold">{totalSumAdmin.toFixed(2)}  € {deviseAdmin}</h2>}
+                {user.role==0 &&<h2 className="text-2xl font-bold">{totalSum.toFixed(2)}  € {devise}</h2>}
+
                 </div>
                 <div className="flex flex-col bg-red-500 text-white gap-2 rounded-xl shadow-lg hover:shadow-xl p-6">
                     <h4 className="text-gray-100 font-medium">Total Factures</h4>

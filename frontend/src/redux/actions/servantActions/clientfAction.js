@@ -20,9 +20,7 @@ import{
 } 
 from '../../actions/servantActions/constant/constantZervant/clientfConstant'
 
-const axiosInstance = axios.create({
-  baseURL : process.env.REACT_APP_SERVER_URL,
-});
+
 
 
       export const fetchAllClientf = async (token) => {

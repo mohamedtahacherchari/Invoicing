@@ -5,6 +5,7 @@ import styles from './Invoice.module.css'
 import PrintIcon from '@mui/icons-material/Print';
 import {Link} from 'react-router-dom'
 import moment from 'moment'
+import './ListFacture.css'
 import {useSelector,useDispatch} from 'react-redux'
 import {initialState} from './initialState'
 import {initialState2} from './initialState'
@@ -27,7 +28,9 @@ import { DEVIS_UPDATE_RESET } from '../../redux/actions/servantActions/constant/
 import { dispatchGetAllClientf, fetchAllClientf } from '../../redux/actions/servantActions/clientfAction';
 import { dispatchGetAllProduct, fetchAllProduct } from '../../redux/actions/servantActions/productAction';
 import CustomizedSelects from './CrediatorRef';
-    
+import { dispatchGetAllClientAdmin, fetchAllClientAdmin } from '../../redux/actions/servantActions/clientAdminAction';
+import { dispatchGetAllProductAdmin, fetchAllProductAdmin } from '../../redux/actions/servantActions/productAdminAction';
+
 const ListDevis = () => {
       const {id} = useParams()
       const navigate =  useNavigate();
@@ -35,6 +38,9 @@ const ListDevis = () => {
   const [titre, setTitre]= useState(initialState2);
   const [soustotal, setSoustotal]= useState([{soustotal:''},]);
   const [totalHorsTva, setTotalHorsTva] = useState(0);
+  const [email, setEmail]= useState();
+  const [adresse, setAdresse]= useState();
+  const [codePostale, setCodePostale]= useState();
 
 
   const condition = [
@@ -157,6 +163,7 @@ const [showButtonAvecRemiseTotalDevise, setShowButtonAvecRemiseTotalDevise] = us
 const [showButtonAvecRemiseTabDevise, setShowButtonAvecRemiseTabDevise] = useState(false)
 const [showButtonAvecRemiseTabPourcent, setShowButtonAvecRemiseTabPourcent] = useState(false)
 const [showMontantOriginaleHT, setShowMontantOriginaleHT] = useState(false)
+const [nomDevis, setNomDevis] = useState();
 
 const [total, setTotal] = useState(0);
 
@@ -172,14 +179,7 @@ const handleClick = () => {
     values[index][e.target.name] = e.target.value;
     setInvoiceData({...invoiceData, items: values});}
 
- /*const handleChangeTitre2 = (index, e) => {
-    const values = [...titre.items2];
-    values[index][e.target.name] = e.target.value;
-    setTitre((prevState) => ({
-      ...prevState,
-      items2: values,
-    }));
-  };*/
+
  
   const handleChangeTitre = (index, e) => {
     const values = [...invoiceData.items2];
@@ -287,54 +287,89 @@ setInvoiceData((prevState)=>({...prevState , values}))
           // Appel de la fonction de calcul du total à chaque mise à jour des conditions
           useEffect(() => {
             calculateTotal();
-          }, [subTotal, subTotal2,  subTotal4, remisetotal2,remisetotal ,total]);
-
+          }, [showResumeFacturePourcent,showResumeFactureDevise,showResumeFacture2,showResumeFacture,showSansRemise,subTotal, subTotal2,  subTotal4, remisetotal2,remisetotal ,total]);
+//subTotal, subTotal2,  subTotal4, remisetotal2,remisetotal ,total => avec ses dépendance toujours li ya un ereur
+//de mis à jour de totalHTpar ligne pourcent donc il faut toujours mettre les dépendance ces dessous
 /*********************/
 
-        // Fonction qui calcule le totalHT en fonction des conditions
-        const calculateTotalHT = () => {
-          let newTotal = 0;
-      
-          // Condition 1
-          if (showTotalHT) {
-            newTotal +=  totalHT2.toFixed(2);
-          }
-      
-          // Condition 2
-          if (showTotalHTPourcent) {
-            newTotal += totalHTPourcent.toFixed(2);
-          }
-      
-          // Condition 3
-          if (showAcomptePourcent_Tab) {
-            //newTotal +=  (subTotal-((remisetotal/subTotal)*100)).toFixed(2)
-            newTotal += (totalHT-remisetotal2).toFixed(2);
-      ;    }
-      
-          // Condition 4
-          if (montrerHT) {
-            newTotal +=   totalHT.toFixed(2);
-          }
-      
-          // Condition 5
-          if (showTotalHTPourcent_Tab) {
-            newTotal +=   (totalHT-(remisetotal/totalHT)*100).toFixed(2);
-          }
-     
-          setTotalHorsTva(newTotal);
+       // Fonction qui calcule le totalHT en fonction des conditions
+       const calculateTotalHT = () => {
+        let newTotal = 0;
     
-      
-        };
-      
-        // Appel de la fonction de calcul du total à chaque mise à jour des conditions
-        useEffect(() => {
-          calculateTotalHT();
-        }, [totalHT2, totalHTPourcent, totalHT,remisetotal2,remisetotal ,totalHorsTva]);
+        // Condition 1 (te5dim)
+        if (showTotalHT) {
+          newTotal +=  totalHT2.toFixed(2);
+        }
     
+        // Condition 2 (te5dim)
+        if (showTotalHTPourcent) {
+          newTotal += totalHTPourcent.toFixed(2);
+        }
+    
+        // Condition 3
+        if (showTotalHT_Tab) {
+          //newTotal +=  (subTotal-((remisetotal/subTotal)*100)).toFixed(2)
+          newTotal += (totalHT-remisetotal2).toFixed(2);
+    ;    }
+    
+        // Condition 4  (te5dim)
+        if (montrerHT) {
+          newTotal +=   totalHT.toFixed(2);
+        }
+    
+        // Condition 5  (te5dim)
+        if (showTotalHTPourcent_Tab) {
+          newTotal +=   (totalHT-(remisetotal/totalHT)*100).toFixed(2);
+        }
+   
+        setTotalHorsTva(newTotal);
+  
+    
+      };
+      useEffect(() => {
+        calculateTotalHT();
+      }, [montrerHT,showTotalHT, showTotalHTPourcent, showTotalHT_Tab,showTotalHTPourcent_Tab, totalHT, totalHT2,totalHTPourcent,remisetotal,remisetotal2]);
+      // totalHTPourcent ===>>> trés import en useEffect
+    /******* */
+
+    const updateNomDevis = () => {
+      let newNomDevis = '';
+    
+      if (showSansRemise) {
+        newNomDevis += 'Devis Sans Remise ';
+      }
+    
+      if (showPourcentageTotal) {
+        newNomDevis += 'Devis Avec Remise Total en Pourcentage ';
+      }
+    
+      if (showDeviseTotal) {
+        newNomDevis += 'Devis Avec Remise Total en Devise ';
+      }
+    
+      if (showPourcentageTab) {
+        newNomDevis += 'Devis Avec Remise Par Ligne en Pourcentage ';
+      }
+    
+      if (showDeviseTab) {
+        newNomDevis += 'Devis Avec Remise Par Ligne en Devise ';
+      }
+      console.log(newNomDevis,"hh")
+
+      return newNomDevis;
+
+    };
+    useEffect(() => {
+      const updatedNomDevis = updateNomDevis();
+      setNomDevis(updatedNomDevis);
+    }, [showSansRemise,showPourcentageTotal,showDeviseTotal,showPourcentageTab,showDeviseTab]);
+
     /*********************/
 const dispatch = useDispatch()
   const clientfs = useSelector(state=> state.clientfs)
   const products = useSelector(state=> state.products)
+  const productAdmin = useSelector(state=> state.productAdmin)
+  const clientAdmin = useSelector(state=> state.clientAdmin)
   const token = useSelector(state => state.token)
   const devisUpdate = useSelector((state) => state.devisUpdate)
   const {
@@ -351,22 +386,48 @@ const dispatch = useDispatch()
     success: successCreate,
     devis: createdDevis,
   } = devisCreate
-    
+  const auth = useSelector(state => state.auth)
+  const {user, isAdmin} = auth
 
 
    useEffect(() => {
-  //console.log(client)
-
-  fetchAllClientf(token).then(res =>{
+      //console.log(client)
+if(user.role==0)
+{  fetchAllClientf(token).then(res =>{
     dispatch(dispatchGetAllClientf(res))
+})}
+if(user.role==1)
+{
+  fetchAllClientAdmin(token).then(res =>{
+    dispatch(dispatchGetAllClientAdmin(res))
 })
-fetchAllProduct(token).then(res =>{
+}
+if(user.role==0) {fetchAllProduct(token).then(res =>{
   dispatch(dispatchGetAllProduct(res))
-})
-  if (successUpdate) {
-      dispatch({ type: DEVIS_UPDATE_RESET})
-  navigate('/inv/devis')
-  } 
+})}
+
+
+if(user.role==1) {fetchAllProductAdmin(token).then(res =>{
+  dispatch(dispatchGetAllProductAdmin(res))
+})}
+if (successUpdate) {
+  alert("Il faut sélectionner le type de devis dans la liste à droite.");
+  dispatch({ type: DEVIS_UPDATE_RESET})
+  if(showButtonSansRemise)
+{navigate(`/inv/print2/${devis._id}`);}  
+  if(showButtonAvecRemiseTotalPourcent){
+    navigate(`/inv/printAvecRemiseTotalPourcent2/${devis._id}`);}
+    if(showButtonAvecRemiseTotalDevise){
+      navigate(`/inv/printAvecRemiseTotalDevise2/${devis._id}`);
+    }
+    if(showButtonAvecRemiseTabPourcent){
+      navigate(`/inv/printAvecRemiseTabPourcent2/${devis._id}`);
+    }
+
+    if(showButtonAvecRemiseTabDevise){
+      navigate(`/inv/printAvecRemiseTabDevise2/${devis._id}`);
+    }
+} 
                   
 else{ 
 if (!devis.num || devis._id !== id){
@@ -446,6 +507,11 @@ if (!devis.num || devis._id !== id){
     setShowMontantOriginaleHT(devis.showMontantOriginaleHT)
     setShowDeviseTab(devis.showDeviseTab)
     setTotalHorsTva(devis.totalHorsTva)
+    setNomDevis(devis.nomDevis)
+    setEmail(devis.email)
+    setAdresse(devis.adresse)
+    setCodePostale(devis.codePostale)
+
 
 }
 }   }
@@ -534,7 +600,11 @@ const submitHandler= (e) => {
       showResumeFactureDevise,
       showResumeFacturePourcent,
       showDeviseTab,
-      totalHorsTva
+      totalHorsTva,
+      email,
+      adresse,
+      codePostale,
+      nomDevis
 
     }))}
 
@@ -545,7 +615,8 @@ const submitHandler= (e) => {
      onAfterPrint : ()=> alert('Print success')
  
       })
-     useEffect(() => {
+     
+      useEffect(() => {
 
         const totalRemise2 =()=> {
           var arr = document.getElementsByName("remisePourcent");
@@ -566,7 +637,7 @@ const submitHandler= (e) => {
            sum += +arr[i].value;}
             setTotalRemise(sum) }
       totalRemise()
-      }, [invoiceData ,totalRemise])
+      }, [invoiceData, total])
 
 
       useEffect(() => {
@@ -588,7 +659,9 @@ const submitHandler= (e) => {
     
     
       
-      }, [invoiceData,totalRemise,subTotal2])
+      }, [invoiceData,totalRemise,subTotal])
+     // console.log(subTotal2)
+
 
       useEffect(() => {
         //Get the sumqte
@@ -601,21 +674,10 @@ const submitHandler= (e) => {
       totalHT()
       
       
-      }, [invoiceData])
+      }, [invoiceData,remisetotal2,remisetotal,showTotalHT, showTotalHTPourcent, showTotalHT_Tab,showTotalHTPourcent_Tab, totalHT, totalHTPourcent])
 
 
-      useEffect(() => {
-        //Get the sumqte
-        const totalHT2 =()=> {
-        var arr = document.getElementsByName("montantHT2");
-        var sum = 0 ;
-         for(var i = 0; i < arr.length; i++) {
-           sum += +arr[i].value;}
-            setTotalHT2(sum) }
-      totalHT2()
-      
-      
-      }, [invoiceData,totalRemise,totalRemise2,totalHT])
+   
           
       useEffect(() => {
       
@@ -628,6 +690,18 @@ const submitHandler= (e) => {
         totalHTPourcent()
       
       }, [invoiceData,totalRemise,totalHTPourcent]) 
+      useEffect(() => {
+        //Get the sumqte
+        const totalHT2 =()=> {
+        var arr = document.getElementsByName("montantHT2");
+        var sum = 0 ;
+         for(var i = 0; i < arr.length; i++) {
+           sum += +arr[i].value;}
+            setTotalHT2(sum) }
+      totalHT2()
+      
+      
+      }, [invoiceData,totalRemise,totalRemise2,totalHT2,showTotalHT])
 
       useEffect(() => {
         //Get the subtotal
@@ -646,7 +720,7 @@ const submitHandler= (e) => {
       
       subTotal()
       
-      }, [invoiceData,totalRemise])
+      }, [invoiceData,totalRemise,showTotalHT])
 
       useEffect(() => {
         //Get the subtotal
@@ -665,26 +739,101 @@ const submitHandler= (e) => {
       
       subTotal4()
       
-      }, [invoiceData,totalRemise])
-
-
-    
-    
-     
-    
-     
-      
-   
+      }, [invoiceData,totalRemise,showTotalHT])
  
+    /*  useEffect(() => {
+        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
+      
+        if (selectedClient) {
+          setEmail(selectedClient.Email);
+        } else {
+          setEmail('');
+        }
+      }, [clientf, clientfs]);
+
+      useEffect(() => {
+        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
+      
+        if (selectedClient) {
+          setAdresse(selectedClient.Address);
+        } else {
+          setAdresse('');
+        }
+      }, [clientf, clientfs]);
+
+      useEffect(() => {
+        const selectedClient = clientfs.find((client) => client.Firstname+ ' ' +client.Surname === clientf);
+      
+        if (selectedClient) {
+          setCodePostale(selectedClient.Codepostal);
+        } else {
+          setCodePostale('');
+        }
+      }, [clientf, clientfs]);
+*/
+
+useEffect(() => {
+  if (user.role === 1) {
+    const selectedClient = clientAdmin.find((client) => client.Firstname + ' ' + client.Surname === clientf);
+
+    if (selectedClient) {
+      setEmail(selectedClient.Email);
+      setAdresse(selectedClient.Address);
+      setCodePostale(selectedClient.Codepostal);
+    } else {
+      setEmail('');
+      setAdresse('');
+      setCodePostale('');
+    }
+  }
+}, [clientf, clientAdmin, user.role]);
+
+useEffect(() => {
+  if (user.role === 0) {
+    const selectedClient = clientfs.find((client) => client.Firstname + ' ' + client.Surname === clientf);
+
+    if (selectedClient) {
+      setEmail(selectedClient.Email);
+      setAdresse(selectedClient.Address);
+      setCodePostale(selectedClient.Codepostal);
+    } else {
+      setEmail('');
+      setAdresse('');
+      setCodePostale('');
+    }
+  }
+}, [clientf, clientfs, user.role]);
+      const DiscountField = ({ label, value, onChange, show }) => {
+        return show ? (
+          <div className="discount-field">
+            <Typography variant="p">{label}</Typography>
+            <TextField
+              id="out"
+              label=""
+              value={value}
+              onChange={onChange}
+              style={{ marginLeft: "75px", width: "250px" }}
+            />
+          </div>
+        ) : null;
+      };
 
 return (
 <div style={{ fontFamily: 'Whyte'}} ref={componentRef}>
     <Link to="/inv/devis" style={{ textDecoration: "none" }}>
     <button className="go_back" style={{marginTop:"100Px"}}>
-    <i className="fas fa-long-arrow-alt-left"></i> Go Back
+    <i className="fas fa-long-arrow-alt-left"></i> 
+            Liste des devis
     </button>
     </Link>
       <form onSubmit={submitHandler}>
+      <Typography 
+            variant="h6" gutterBottom 
+            style={{marginLeft: "140px",
+             textShadow: "2px 2px 5px green" ,
+              fontSize: "42px",
+             marginTop :"px",}}> 
+              Estimation</Typography>
       <table>
         <tbody>
           <td>
@@ -694,21 +843,34 @@ return (
           <table>
           <tbody>
 	        <td>
-          <select style={{width:"200px",height:"50px"}} 
-          onChange={(e)=>setClientf(e.target.value)}
-           value={clientf}>
-          {clientfs.map((clientf)=>
-          (<option key={clientf._id} > {clientf.Firstname}{clientf.Surname}</option>))}
-          </select>
+          { user.role ===0 &&     <select style={{ width: "200px", height: "50px" }} onChange={(e) => setClientf(e.target.value)} value={clientf}>
+  {clientfs.map((clientf) => (
+    <option key={clientf._id}>
+      {clientf.Firstname} {clientf.Surname}
+
+    </option>
+  ))}
+</select>}
+
+
+{ user.role ===1 &&     <select style={{ width: "200px", height: "50px" }} onChange={(e) => setClientf(e.target.value)} value={clientf}>
+  {clientAdmin.map((clientf) => (
+    <option key={clientf._id}>
+      {clientf.Firstname} {clientf.Surname}
+
+    </option>
+  ))}
+</select>}
+
+
+          <p>Client :{clientf}</p>
+
+          <p>{devis.email}</p>
+          <p>{devis.adresse}</p>
+          <p>{devis.codePostale}</p>
           </td>
 	         <td>        
-            <Typography 
-            variant="h6" gutterBottom 
-            style={{marginLeft: "540px",
-             textShadow: "2px 2px 5px green" ,
-              fontSize: "42px",
-             marginTop :"10px",}}> 
-              Estimation</Typography>
+           
               </td>
 	           </tbody>
              </table>
@@ -793,8 +955,17 @@ return (
         </td>
       </tbody>
     </table>
+    {showSansRemise &&<div style={{marginLeft:"450px" , color: "green"}} >{nomDevis}</div>}
+{showPourcentageTotal &&<div style={{marginLeft:"450px" , color: "green"}}>{nomDevis}</div>}   
+ {showDeviseTotal && <div style={{marginLeft:"450px" , color: "green"}}>{nomDevis}</div>}
+{showPourcentageTab && <div style={{marginLeft:"450px" , color: "green"}}>{nomDevis}</div>} 
+{showDeviseTab && <div style={{marginLeft:"450px" , color: "green"}}>{nomDevis}</div>}
 <Divider style={{marginBottom:"px" ,marginTop:"px"}}/>
-          <table>
+          <table style={{position :"relative" ,zIndex: "9999", backgroundColor:"white",
+        }}
+                    className="responsive-table"
+
+          >
             <thead>
               <tr>
                 <th>Produit</th>
@@ -818,14 +989,24 @@ return (
              {invoiceData.items && invoiceData.items.map((itemField,index) =>{
               return(
                <tr key={index}>
-                <td>
-                  <select 
+               <td>
+                 {user.role==0 && <select 
                   name="product"
                   style={{width:"200px",height:"50px"}} 
-                   onChange={(e)=>handleChange(index,e)} value={itemField.product}>
+                   onChange={(e)=>handleChange(index,e)}
+                    value={itemField.product}>
                     {products.map((product)=>
                     (<option key={product._id} > {product.name}</option>))}
-                  </select>
+                  </select>}
+
+                  {user.role==1 && <select 
+                  name="product"
+                  style={{width:"200px",height:"50px"}} 
+                   onChange={(e)=>handleChange(index,e)}
+                    value={itemField.product}>
+                    {productAdmin.map((product)=>
+                    (<option key={product._id} > {product.name}</option>))}
+                  </select>}
                </td>
            {showDate &&(
              <td>				  
@@ -1045,173 +1226,132 @@ return (
               </tbody>
              </table> 
              <table>
-             <tbody>
-             {invoiceData.items2 && invoiceData.items2.map((itemField2,index) =>{
-              return(<tr key={index}><td>
-      <TextField
-       autoFocus
-       margin=""
-       id=""
-       name="title"
-       label=""
-       placeholder='Titre'
-       type="text"
-       value={itemField2.title}
-       onChange={(e)=>handleChangeTitre(index,e)}
-       fullWidth
-       variant="outlined"
-      style={{width:"820px"}}
-     />
-     </td>
-     <Button  aria-label="delete" size="small" onClick={() => removeTitre(index)} 
-             style={{marginLeft:"90px"}}>
+  <tbody>
+    {invoiceData.items2 && invoiceData.items2.map((itemField2, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <TextField
+              autoFocus
+              margin=""
+              id=""
+              name="title"
+              label=""
+              placeholder="Titre"
+              type="text"
+              value={itemField2.title}
+              onChange={(e) => handleChangeTitre(index, e)}
+              fullWidth
+              variant="outlined"
+              style={{ width: "100%" }}
+            />
+          </td>
+          <td>
+            <Button aria-label="delete" size="small" onClick={() => removeTitre(index)}>
               <IconButton aria-label="delete" size="small">
-              <DeleteIcon fontSize="small" /></IconButton></Button>
-          <td>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
           </td>
-          </tr>)})} 
-        </tbody>
-       </table>
-       <table>
-        <tbody>
-        {invoiceData.items3 && invoiceData.items3.map((itemField3,index) =>{
-          return(
-          <tr key={index}>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    {invoiceData.items3 && invoiceData.items3.map((itemField3, index) => {
+      return (
+        <tr key={index}>
           <td>
-          <TextareaAutosize
-            maxRows={4}
-            aria-label="Text"
-            name="champ"
-            placeholder="Champ text"
-            //defaultValue="Text"
-            variant="outlined"
-            value={itemField3.champ}
-            onChange={(e)=>handleChangeChamp(index,e)}
-            style={{width: "910px" ,height:"200px"}}/>
-          </td>
-          <Button  aria-label="delete" size="small" onClick={() => removeChamptext(index)}>
-              <IconButton aria-label="delete" size="small" style={{marginLeft:"5px"}}>
-             <DeleteIcon fontSize="small" /></IconButton>
-           </Button>
-          <td>
-           </td>
-          </tr>)})} 
-        </tbody>
-       </table>
-       <table>
-        <tbody>
-        {invoiceData.items4 && invoiceData.items4.map((itemField4,index)  =>{
-             return( 
-          <tr key={index}>
-          <td>
-          <h6 style={{width:"200px"}}>Sous-total(Montant sans Remise)</h6>
+            <TextareaAutosize
+              maxRows={4}
+              aria-label="Text"
+              name="champ"
+              placeholder="Champ text"
+              variant="outlined"
+              value={itemField3.champ}
+              onChange={(e) => handleChangeChamp(index, e)}
+              style={{ width: "100%", height: "200px" }} 
+            />
           </td>
           <td>
-          <h6  name="sous" style={{marginLeft:"690px", width:"90Px"}} 
-          
-          
-          >{subTotal}</h6>
+            <Button aria-label="delete" size="small" onClick={() => removeChamptext(index)}>
+              <IconButton aria-label="delete" size="small" style={{ marginLeft: "5px" }}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    {invoiceData.items4 && invoiceData.items4.map((itemField4, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <h6 style={{ width: "100%" }}>Sous-total(Montant Final)</h6>
           </td>
           <td>
-         <Button  aria-label="delete" size="small" onClick={() => removeSoustotal(index)}>
-              <IconButton aria-label="delete" size="small" style={{marginLeft:"52px"}}>
-              <DeleteIcon fontSize="small" /></IconButton></Button>
+            {/* Adjust the styling based on screen size */}
+            <h6 name="sous" style={{ marginLeft: "60%", width: "100px" }}>
+              {total}
+            </h6>
           </td>
-          </tr>)})} 
-        </tbody>
-        </table>
+          <td>
+            <Button aria-label="delete" size="small" onClick={() => removeSoustotal(index)}>
+              <IconButton aria-label="delete" size="small" style={{ marginLeft: "5%" }}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Button>
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
 
            
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
-
-                {showDeviseTotal && (<td>
-              <Typography variant="p">
-               Remise (Devise)
-               </Typography></td>)}
-          
-        {showDeviseTotal && (<td>
-          <TextField
-           id="outlined-basic"
-           label=""
-           value={remisetotal2}
-           onChange={(e) => setRemisetotal2(e.target.value)}
-           variant="outlined" 
-           placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-         </table>
-              </div>
-
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
-      {showPourcentageTotal &&(<td>
-        <Typography variant="p" >
-               Remise  (%)
-               </Typography></td>)}
-      {showPourcentageTotal &&(<td>
-          <TextField
-           id="out"
-           label=""
-           value={remisetotal}
-           onChange={(e) => setRemisetotal(e.target.value)}
-         //  variant="outlined" 
-          // placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-         </table>
-              </div>
-
-              <div style={{marginLeft:"520px"}}> 
-              <table>
-               <tbody>
- {showSommeDevise &&( <td>
-        <Typography variant="p" >
-             Remise
-               </Typography></td>)}   
-   {showSommeDevise &&(<td> 
-          <TextField
-           id="devise"
-           label=""
-           value={totalRemise}
-           //variant="outlined" 
-           //placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-         </td>)}
-         </tbody>
-   </table>
-              </div>
-              <div style={{marginLeft:"520px"}}> 
-            <table>
-               <tbody>
- {showSommePourcent && (<td>
-        <Typography variant="p" gutterBottom Conditions de paiement>
-           Remise 
-               </Typography></td>)}  
-        
- {showSommePourcent &&
-  (<td><TextField
-           id="pourCent"
-           label=""
-            value={(subTotal - subTotal2).toFixed(2)}
-           placeholder="remise"
-           style={{marginLeft:"75px", width:"250px"}}/>
-           </td>)}
-         </tbody>
-  </table>
-              </div>
+        <div className="container">
+      {/* Add CSS class to reduce space */}
+      <div className="space-reduction">
+        <DiscountField
+          label="Remise (Devise)"
+          value={remisetotal2}
+          onChange={(e) => setRemisetotal2(e.target.value)}
+          show={showDeviseTotal}
+        />
+        <DiscountField
+          label="Remise  (%)"
+          value={remisetotal}
+          onChange={(e) => setRemisetotal(e.target.value)}
+          show={showPourcentageTotal}
+        />
+        <DiscountField
+          label="Remise"
+          value={totalRemise}
+          show={showSommeDevise}
+        />
+        <DiscountField
+          label="Remise"
+          value={(subTotal - subTotal2).toFixed(2)}
+          show={showSommePourcent}
+        />
+      </div>
+    </div>
           <div className={styles.invoiceSummary}>
-          <div className={styles.summary}>Résumé de le devis</div>
+          <div className={styles.summary}>Résumé </div>
           <div className={styles.summaryItem}>
           <p>Total HT:</p>
-          {showTotalHT && typeof totalHT2 === 'number' && (<h4>{totalHorsTva}</h4>)}
-  {showTotalHTPourcent && typeof totalHTPourcent === 'number' && (<h4>{totalHorsTva}</h4>)}
-  {showTotalHT_Tab && typeof totalHT === 'number'&&(<h4>{totalHorsTva}</h4>)}
-  {montrerHT && typeof totalHT === 'number'&&(<h4>{totalHorsTva}</h4>)}
+          {showTotalHT && (<h4>{totalHorsTva}</h4>)}
+  {showTotalHTPourcent &&  (<h4>{totalHorsTva}</h4>)}
+  {showTotalHT_Tab && (<h4>{totalHorsTva}</h4>)}
+  {montrerHT && (<h4>{totalHorsTva}</h4>)}
   {showTotalHTPourcent_Tab &&<h4>{totalHorsTva}</h4>}
           </div>
         {showDeviseTotal && (<div className={styles.summaryItem}>
@@ -1361,37 +1501,8 @@ setShowMontantOriginaleHT={setShowMontantOriginaleHT}
        </td>
        </tbody>
        </table> 
-       <button type="submit" className={styles.but}>Enregister</button>
+       <Button type="submit" className={styles.but}>Enregistez</Button>
 
-       {showButtonSansRemise && (<Link to={`/inv/print2/${devis._id}`} style={{ textDecoration: "none" }}>
-    <button className={styles.but}  style={{marginTop:"60Px"}}>
-    <PrintIcon/> Passez à imprimer 
-    </button>
-    </Link>)}
-    {showButtonAvecRemiseTotalPourcent && (<Link to={`/inv/printAvecRemiseTotalPourcent2/${devis._id}`} style={{ textDecoration: "none" }}>
-    <button className={styles.but}  style={{marginTop:"60Px"}}>
-    <PrintIcon/> Passez à imprimer
-    </button>
-    </Link>)}
-
-    {showButtonAvecRemiseTotalDevise && (<Link to={`/inv/printAvecRemiseTotalDevise2/${devis._id}`} style={{ textDecoration: "none" }}>
-    <button className={styles.but}  style={{marginTop:"60Px"}}>
-    <PrintIcon/> Passez à imprimer
-    </button>
-    </Link>)}
-    
-    {showButtonAvecRemiseTabPourcent && (<Link to={`/inv/printAvecRemiseTabPourcent2/${devis._id}`} style={{ textDecoration: "none" }}>
-    <button className={styles.but}  style={{marginTop:"60Px"}} type="submit">
-    <PrintIcon/> Passez à imprimer
-    </button>
-    </Link>)}
-
-    
-    {showButtonAvecRemiseTabDevise && (<Link to={`/inv/printAvecRemiseTabDevise2/${devis._id}`} style={{ textDecoration: "none" }}>
-    <button className={styles.but}  style={{marginTop:"60Px"}}>
-    <PrintIcon/> Passez à imprimer 
-    </button>
-    </Link>)}
    
        </form>
        </div>)}

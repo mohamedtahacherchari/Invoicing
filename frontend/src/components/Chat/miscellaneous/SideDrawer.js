@@ -157,7 +157,20 @@ const logoutHandler = async () => {
           </Button>
         </Tooltip>
         <Text fontSize="2xl" fontFamily="Work sans" color="green">
-Greenlinks Chat        </Text>
+ 
+<img
+            //src="https://res.cloudinary.com/dcdei4osp/image/upload/v1661343478/logo/logo_xc49qh.png"
+            src="https://res.cloudinary.com/dcdei4osp/image/upload/v1692609330/green-links-logo-simplifie_mljnej.png"
+            height="25px"
+            width="250px"
+            alt="logo"
+            sx={{
+              display: 'flex',
+              ml: -5
+            }}
+          />
+      
+    </Text>
         <div>
           <Menu>
             <MenuButton p={1}>

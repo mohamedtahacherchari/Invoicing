@@ -9,18 +9,16 @@ import {
   isSameSenderMargin,
   isSameUser,
 } from "../../Chat/config/ChatLogics";
-import {useSelector} from 'react-redux'
-//import { createLocalStorageManager } from "@chakra-ui/react";
+import { useSelector } from 'react-redux';
 
 const ScrollableChat = ({ messages }) => {
-  const auth = useSelector(state => state.auth)
-  const {user} = auth
-  //const users = useSelector(state => state.users)
+  const auth = useSelector(state => state.auth);
+  const { user } = auth;
   const [isShown, setIsShown] = useState(false);
-  //console.log( isSameSender)
-  console.log(messages)
 
-  console.log(user._id)
+  console.log(messages);
+  console.log(user._id);
+
   return (
     <ScrollableFeed>
       {messages &&
@@ -36,13 +34,11 @@ const ScrollableChat = ({ messages }) => {
                   cursor="pointer"
                   firstname={m.sender.firstName}
                   src={m.sender.avatar}
-                />                 
-
+                />
               </Tooltip>
-            )} 
-                          
-            <span
+            )}
 
+            <span
               style={{
                 backgroundColor: `${
                   m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
@@ -54,21 +50,23 @@ const ScrollableChat = ({ messages }) => {
                 maxWidth: "75%",
               }}
             >
-         <button
-        onMouseEnter={() => setIsShown(true)}
-        onMouseLeave={() => setIsShown(false)}>
-             {m.content}
-      </button>
-      
-        <div style={{fontSize:"10px"}}>
-         {m.deliveredAt.substring(11,16)}  {m.deliveredAt.substring(0,10).split("-").reverse().join("-")} 
-        </div>
-      
+              {m.content.includes('<img') ? (
+                <div dangerouslySetInnerHTML={{ __html: m.content }} />
+              ) : (
+                <button
+                  onMouseEnter={() => setIsShown(true)}
+                  onMouseLeave={() => setIsShown(false)}
+                >
+                  {m.content}
+                </button>
+              )}
+
+              <div style={{ fontSize: "10px" }}>
+                {m.deliveredAt.substring(11, 16)} {m.deliveredAt.substring(0, 10).split("-").reverse().join("-")}
+              </div>
             </span>
-            
           </div>
         ))}
-   
     </ScrollableFeed>
   );
 };

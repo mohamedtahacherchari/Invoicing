@@ -11,7 +11,7 @@ import client from './clientReducer'
 import clientfs from './zervantReducers/ClientfReducer'
 import products from './zervantReducers/ProductReducer'
 import factures from './zervantReducers/FactureReducer'
-import  facturesAdmin from './zervantReducers/FactureReducerAdmin'
+import facturesAdmin from './zervantReducers/FactureReducerAdmin'
 import devisAdmin from './zervantReducers/DevisReducerAdmin'
 import productAdmin from './zervantReducers/ProductReducerAdmin'
 import clientAdmin from './zervantReducers/ClientReducerAdmin'
@@ -57,6 +57,11 @@ import {
     devisDetailsReducer,
     devisCreateReducer,
     devisListReducer,
+    envoyerMailSansRemiseReducer2,
+    envoyerMailAvecRemiseTotalEnPourcentageReducer2,
+    envoyerMailAvecRemiseTotalEnDeviseReducer2,
+    envoyerMailAvecRemiseParLigneEnPourcentageReducer2,
+    envoyerMailAvecRemiseParLigneEnDeviseReducer2
     
 }
 from './zervantReducers/DevisReducer'
@@ -117,7 +122,11 @@ export default combineReducers({
     envoyerMailAvecRemiseTotalEnPourcentage :envoyerMailAvecRemiseTotalEnDeviseReducer,
     envoyerMailAvecRemiseParLigneEnPourcentage: envoyerMailAvecRemiseParLigneEnPourcentageReducer,
     envoyerMailAvecRemiseParLigneEnDevise: envoyerMailAvecRemiseParLigneEnDeviseReducer,
-
+    envoyerMailSansRemise : envoyerMailSansRemiseReducer2,
+    envoyerMailAvecRemiseTotalEnPourcentage :envoyerMailAvecRemiseTotalEnPourcentageReducer2,
+    envoyerMailAvecRemiseTotalEnDevise :envoyerMailAvecRemiseTotalEnDeviseReducer2,
+    envoyerMailAvecRemiseParLigneEnPourcentage :envoyerMailAvecRemiseParLigneEnPourcentageReducer2,
+    envoyerMailAvecRemiseParLigneEnDevise : envoyerMailAvecRemiseParLigneEnDeviseReducer2
 
 })
 

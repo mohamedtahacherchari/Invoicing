@@ -256,9 +256,9 @@ const axiosInstance = axios.create({
         }
 
 
-export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
+export const envoyerMailSansRemise = (id,token,pdfData) => async (dispatch) => {
           try {
-            const res = await axios.get(`/api/facture/sendMailwithoutDelivery/${id}`, {
+            const res = await axios.post(`/api/facture/sendMailwithoutDelivery/${id}`,{pdfData}, {
               headers: {Authorization: token }});
             console.log(res.data);
 
@@ -298,9 +298,9 @@ export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
         };
 
 
- export const envoyerMailAvecRemiseTotalEnPourcentage = (id, token) => async (dispatch) => {
+export const envoyerMailAvecRemiseTotalEnPourcentage = (id,token,pdfData) => async (dispatch) => {
     try {
-      const res = await axios.get(`/api/facture/sendMailwithDeliveryTotalInPercentage/${id}`, {
+      const res = await axios.post(`/api/facture/sendMailwithDeliveryTotalInPercentage/${id}`,{pdfData}, {
       headers: { Authorization: token },});
       console.log(res.data);
       toast.success('Le message a été envoyé avec succès.', {
@@ -337,9 +337,9 @@ export const envoyerMailSansRemise = (id,token) => async (dispatch) => {
           }
         };
         
-export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch) => {
+export const envoyerMailAvecRemiseTotalEnDevise = (id, token, pdfData) => async (dispatch) => {
           try {
-            const res = await axios.get(`/api/facture/sendMailwithDeliveryTotalInDevise/${id}`, {
+            const res = await axios.post(`/api/facture/sendMailwithDeliveryTotalInDevise/${id}`,{pdfData}, {
             headers: { Authorization: token },});
             console.log(res.data);
             toast.success('Le message a été envoyé avec succès.', {
@@ -375,9 +375,9 @@ export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch
                   });
                 }
               };
-              export const envoyerMailAvecRemiseParLigneEnPourcentage = (id, token) => async (dispatch) => {
+export const envoyerMailAvecRemiseParLigneEnPourcentage = (id,token, pdfData) => async (dispatch) => {
                 try {
-                  const res = await axios.get(`/api/facture/sendMailwithDeliveryParLigneInPercentage/${id}`, {
+                  const res = await axios.post(`/api/facture/sendMailwithDeliveryParLigneInPercentage/${id}`,{pdfData}, {
                   headers: { Authorization: token },});
                   console.log(res.data);
                   toast.success('Le message a été envoyé avec succès.', {
@@ -414,9 +414,9 @@ export const envoyerMailAvecRemiseTotalEnDevise = (id, token) => async (dispatch
                       }
                     };
 
-   export const envoyerMailAvecRemiseParLigneEnDevise = (id, token) => async (dispatch) => {
+export const envoyerMailAvecRemiseParLigneEnDevise = (id, token, pdfData) => async (dispatch) => {
         try {
-        const res = await axios.get(`/api/facture/sendMailwithDeliveryParLigneInDevise/${id}`, {
+        const res = await axios.post(`/api/facture/sendMailwithDeliveryParLigneInDevise/${id}`,{pdfData}, {
         headers: { Authorization: token },});
         console.log(res.data);
         toast.success('Le message a été envoyé avec succès.', {

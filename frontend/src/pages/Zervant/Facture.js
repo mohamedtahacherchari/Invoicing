@@ -87,7 +87,6 @@ const factureList = useSelector((state) => state.factureList)
    
 
 
-
       const createFactureHandler = () => {
         dispatch(createFacture())
       }
@@ -103,7 +102,7 @@ const factureList = useSelector((state) => state.factureList)
 
 					</Box>
 
-                    <div style={{overflowX: "auto" ,width:"1250px"}}>
+                    <div style={{overflowX: "auto" ,width:"100%"}}>
           <table className="customers  rounded-table">
             <thead>
               <tr>

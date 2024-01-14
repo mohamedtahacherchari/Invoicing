@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../../models/Chat/chatModel");
 const Users = require("../../models/userModel");
+const mongoose = require('mongoose');
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
@@ -83,28 +84,31 @@ const fetchChats = asyncHandler(async (req, res) => {
 //@description     Create New Group Chat
 //@route           POST /api/chat/group
 //@access          Protected
-const createGroupChat = asyncHandler(async (req, res) => {
+const createGroupChat7 = asyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.name) {
-    return res.status(400).send({ message: "Please Fill all the feilds" });
+    return res.status(400).send({ message: "Please Fill all the fields" });
   }
 
-  var users = JSON.parse(req.body.users);
-  console.log(users)
+  const users = JSON.parse(req.body.users);
+
   if (users.length < 2) {
     return res
       .status(400)
       .send("More than 2 users are required to form a group chat");
   }
-
-  users.push(req.user);
-
+// Filtrer les ID d'utilisateurs valides
+const validUserIds = users.filter(userId => mongoose.Types.ObjectId.isValid(userId));
+  
+//users.push(req.user._id);
+// Ajouter l'ID de l'utilisateur actuel à la liste
+validUserIds.push(req.user._id);
   try {
     const groupChat = await Chat.create({
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
-      groupAdmin: req.user,
-    });
+      groupAdmin: req.user._id,
+    })
 
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
       .populate("users", "-password")
@@ -112,10 +116,122 @@ const createGroupChat = asyncHandler(async (req, res) => {
 
     res.status(200).json(fullGroupChat);
   } catch (error) {
-    res.status(400);
-    throw new Error(error.message);
+    res.status(400).json({ message: "Failed to create the chat", error: error.message });
   }
 });
+const createGroupChat8 = asyncHandler(async (req, res) => {
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "Please Fill all the fields" });
+  }
+
+  const users = JSON.parse(req.body.users);
+
+  if (users.length < 2) {
+    return res
+      .status(400)
+      .send("More than 2 users are required to form a group chat");
+  }
+
+  console.log("All users:", users);
+
+  // Filtrer les ID d'utilisateurs valides
+ /* const validUserIds = users.filter(userId => {
+    const isValid = mongoose.Types.ObjectId.isValid(userId);
+    if (!isValid) {
+      console.log(`Invalid user ID: ${userId}`);
+    }
+    return isValid;
+  });
+
+  // Ajouter l'ID de l'utilisateur actuel à la liste
+  validUserIds.push(req.user._id);*/
+  const validUserIds = users.filter(userId => mongoose.Types.ObjectId.isValid(userId));
+
+if (validUserIds.length < 2) {
+  return res
+    .status(400)
+    .send("More than 2 valid users are required to form a group chat");
+}
+
+// Ajouter l'ID de l'utilisateur actuel à la liste
+validUserIds.push(req.user._id);
+
+
+  try {
+    console.log("Creating group chat...");
+    const groupChat = await Chat.create({
+      chatName: req.body.name,
+      users: validUserIds,
+      isGroupChat: true,
+      groupAdmin: req.user._id,
+    }).populate("users", "-password").populate("groupAdmin", "-password");
+    console.log("Group chat created:", groupChat);
+
+
+    console.log("Group chat created:", groupChat);
+
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+    console.log("Full group chat populated:", fullGroupChat);
+
+    res.status(200).json(fullGroupChat);
+  } catch (error) {
+    console.error("Failed to create the chat!", error);
+    res.status(400).json({ message: "Failed to create the chat", error: error.message });
+  }
+});
+const createGroupChat = asyncHandler(async (req, res) => {
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "Please Fill all the fields" });
+  }
+
+  const users = JSON.parse(req.body.users);
+  if (users.length < 2) {
+    return res
+      .status(400)
+      .send("More than 2 users are required to form a group chat");
+  }
+
+  // Filtrer les ID d'utilisateurs valides
+  const validUserIds = users.filter(userId => mongoose.Types.ObjectId.isValid(userId));
+
+  // Ajouter l'ID de l'utilisateur actuel à la liste
+  validUserIds.push(req.user._id);
+// Valider que l'ID de l'administrateur de groupe est parmi les utilisateurs
+if (!validUserIds.includes(req.user._id)) {
+  return res.status(400).send("Group admin must be one of the users");
+}
+
+  try {
+    //console.log("Creating group chat...");
+    const groupChat = await Chat.create({
+      chatName: req.body.name,
+      users: validUserIds,
+      isGroupChat: true,
+      groupAdmin: req.user._id,
+    });
+    console.log(req.user)
+
+    //console.log("Group chat created:", groupChat);
+
+    // Exécuter la méthode populate après la création du chat
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+   // console.log("Full group chat populated:", fullGroupChat);
+
+    res.status(200).json(fullGroupChat);
+  } catch (error) {
+    console.error("Failed to create the chat!", error);
+    res.status(400).json({ message: "Failed to create the chat", error: error.message });
+  }
+});
+
+
+
 
 // @desc    Rename Group
 // @route   PUT /api/chat/rename

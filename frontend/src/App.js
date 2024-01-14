@@ -1,31 +1,34 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import React,{useEffect} from 'react';
+import {Routes,Route,useLocation} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchLogin, fetchUser, dispatchGetUser } from './redux/actions/authAction';
 import axios from 'axios';
-
 import SignIn from './pages/User/SignIn'
 import SignUp from './pages/User/SignUp'
 import ForgotPassword from './pages/User/ForgotPassword'
-import EmailActivation from './pages/User/EmailActivation'
-import ResetPassword from './pages/User/ResetPassword'
-
 import Home3 from './pages/Home3';
 import Chatpage from './pages/Chat/Chatpage';
-//import Hover from './pages/Hover';
-import  ResponsiveAppBar  from './pages/ResponsiveAppBar';
-
-/*mkdir /root/netflix/frontend/src/pages/User/ResetPassword
-*/
+import ResetPWD from './pages/User/ResetPWD';
+import ResetPassword from './pages/User/ResetPassword';
+import GoogleOneTapLogin from './pages/User/GoogleOneTapLogin';
+import EmailActivation from './pages/User/EmailActivation';
 
 function App() {
-
 	const dispatch = useDispatch()  
 	const token = useSelector(state => state.token)
 	const auth = useSelector(state => state.auth)
 	const {isLogged} = auth
-	
+	const location = useLocation();
+	const queryParams = new URLSearchParams(location.search);
+	// ResetPasswordRoute component
+      console.log(auth)
+const ResetPasswordRoute = () => {
+    return isLogged ? <Home3 /> : <ResetPassword />;
+};
+//const firstLogin = localStorage.setItem('firstLogin')
+
 	useEffect(() => {
+
 		const firstLogin = localStorage.getItem('firstLogin')
 		if(firstLogin){
 			const getToken = async () => {
@@ -49,28 +52,19 @@ function App() {
 		}
 	},[token, dispatch])
 
-	return (
+	return     (
+				
+		<Routes>
+		<Route path="/*" element={isLogged ? <Home3/> : <SignUp/>} />
+        <Route path='/inv/signin' element={isLogged ? <Home3/> : <SignIn/>} exact />
+{/*		<Route path='/:token'  element={<ResetPasswordRoute />} />
+*/}		<Route path="/inv/forgotpassword" element={<ForgotPassword/>} />
+		<Route path='/inv/chats' element={<Chatpage/>} />
+		<Route path='/inv' element={<GoogleOneTapLogin/>}/>
+		<Route path="/alia/inv/:activation_token" element={<EmailActivation/>} />
 
-		
-			<Routes>
-				<Route path='/*' element={ isLogged ?  <Home3/> : <SignIn />} />
-
-				{/*Authentication Routes */}
-				<Route path="/inv/register" element={ isLogged ? <Home3/> : <SignUp />} />
-				<Route path="/inv/forgotpassword" element={<ForgotPassword/>} />
-				<Route path="/inv/user/activate/:activation_token" element={<EmailActivation/>} />
-	             <Route path='/inv/chats' element={<Chatpage/>} />
-				 <Route path = 'inv/user/reset/:token'element={<ResetPassword/>}/>
-		    	{/*<Route path='/hover' element={<Hover/>} />*/}
-				<Route path="/inv/fact" element={<ResponsiveAppBar/>}/>
-
-
-    
-
-			</Routes>
-	
-
-	);
+	  </Routes>
+				);
 }
 
 export default App;

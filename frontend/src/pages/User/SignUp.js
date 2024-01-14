@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
 
+
 const initialState = {
     firstName: '',
     lastName: '',
@@ -119,8 +120,9 @@ export default function SignUp() {
         try {
                    const {data}= await axios.post('/api/user/register',
                     {firstName, lastName, email, password})
+
                     setUser({...user, err: '', success: data.msg})
-                    toast.success("Check Your Email to activate your account.", {
+                    toast.success("Assister à l'acceptation de l'administrateur.", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -130,13 +132,40 @@ export default function SignUp() {
                         progress: undefined,
                         theme: "colored",
                     });
-                   localStorage.setItem("userInfo", JSON.stringify(data));}
+                    console.log(data)
+
+                localStorage.setItem("userInfo", JSON.stringify(data));
+            }
+
             catch (err) {
 			err.response.data.msg &&
             setUser({...user, err:err.response.data.msg, success:''})
-            console.log(err)}};
-   
+            console.log(err)}
+
+        };
+        function storeUserInfo(data) {
+            // Convertir l'objet data en une chaîne JSON
+            const userInfoJSON = JSON.stringify(data);
+          
+            // Stocker la chaîne JSON dans le localStorage sous la clé "userInfo"
+            localStorage.setItem("userInfo", userInfoJSON);
+          }
+          
+          // Exemple d'utilisation avec les données que vous avez fournies
+          const data = {
+            _id: "64d3a4ec6c6cc76e744444483bdb9",
+            firstName: "Mohamed Taha",
+            email: "taha@greenlinks.fr",
+            role: 1,
+            avatar: "http://res.cloudinary.com/piyushproj/image/upload/v1692279395/lnx6f1nftsowjvh6zowd.jpg",
+            token: "eyJhbGciOiJIUzI1Ni3333IsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDNhNGVj6N7mN6c3ZlNzR4MzLhm0vbhljAy5mcm9it",
+          };
+          
+        storeUserInfo(data);
+
+
         return (
+            <div>
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
@@ -261,7 +290,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container>
                         <Grid item>
-                        <Link href="/" variant="body2">
+                        <Link href="/inv/signin" variant="body2" >
                             {"Vous avez un compte ? S'identifier"}
                         </Link>
                         </Grid>
@@ -272,5 +301,7 @@ export default function SignUp() {
                 </Grid>
             </Grid>
         </ThemeProvider>
+       
+       </div>
     );
 }

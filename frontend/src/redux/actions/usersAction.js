@@ -1,8 +1,6 @@
 import ACTIONS from './index'
 import axios from 'axios'
-const axiosInstance = axios.create({
-    baseURL : process.env.REACT_APP_SERVER_URL,
-  });
+
 export const fetchAllUsers = async (token) => {
     const res = await axios.get('/api/user/allusers', {
         headers: {Authorization: token}

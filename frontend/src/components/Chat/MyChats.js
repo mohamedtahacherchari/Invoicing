@@ -5,20 +5,17 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { getSender } from "../../Chat/config/ChatLogics";
 import ChatLoading from "./ChatLoading";
-//import GroupChatModal from "./miscellaneous/GroupChatModal";
+import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button } from "@chakra-ui/react";
 import { ChatState } from "../../Chat/context/ChatProvider";
 import {useSelector} from 'react-redux'
 import ErrorBoundary from '../../pages/Zervant/handleErrors '
 
 const MyChats = ({ fetchAgain }) => {
-  const axiosInstance = axios.create({
-    baseURL : process.env.REACT_APP_SERVER_URL,
-  });
   const auth = useSelector(state => state.auth)
   const {user} = auth
   const token = useSelector(state => state.token)
- // const [loggedUser, setLoggedUser] = useState();
+ const [loggedUser, setLoggedUser] = useState();
 
 
 
@@ -52,8 +49,9 @@ const { selectedChat,setSelectedChat, chats, setChats } = ChatState();
     }
   };
   useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-   // setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+   // 
    
     // eslint-disable-next-line
   }, [fetchAgain,user]);
@@ -81,7 +79,17 @@ const { selectedChat,setSelectedChat, chats, setChats } = ChatState();
         justifyContent="space-between"
         alignItems="center"
       >
-      Mes chats  
+      
+     <GroupChatModal>
+    
+          <Button
+            d="flex"
+            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            rightIcon={<AddIcon />}
+          >
+            Nouveau groupe de discussion
+          </Button>
+  </GroupChatModal>
       </Box>
       <Box
         d="flex"
@@ -98,7 +106,7 @@ const { selectedChat,setSelectedChat, chats, setChats } = ChatState();
           >
             {chats.map((chat) => (
               <Box
-              //key={chat?._id}
+              key={chat._id}
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
                 bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
@@ -108,11 +116,20 @@ const { selectedChat,setSelectedChat, chats, setChats } = ChatState();
                 borderRadius="lg"
                // key={chat._id}
               >
-                <Text>
+              {/*  <Text>
                   {!chat.isGroupChat
+                    ? chat.users && chat.users.length > 0 // Assurez-vous que chat.users est défini et non vide
                     ? getSender(user, chat.users)
+                    : "Nom de l'expéditeur manquant"
                     : chat.chatName}
-                </Text>
+                  </Text>*/}
+                  <Text>
+                    {!chat.isGroupChat
+                      ? chat.users && chat.users.length > 0
+                      ? getSender(user, chat.users) || "Nom de l'expéditeur manquant"
+                      : "Nom de l'expéditeur manquant"
+                      : chat.chatName}
+                    </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs" color="green" >
                     <b>{chat.latestMessage.sender.firstName} : </b>

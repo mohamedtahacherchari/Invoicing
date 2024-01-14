@@ -11,18 +11,17 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../../Chat/animations/typing.json";
-import {useSelector} from 'react-redux'
-
+import FileUploadForm  from "./FormulaireTelechargementFichier"; // Importez le nouveau composant
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../../Chat/context/ChatProvider";
+import {useSelector} from 'react-redux'
+
 const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain}) => {
-  const axiosInstance = axios.create({
-    baseURL : process.env.REACT_APP_SERVER_URL,
-  });
+
 const auth = useSelector(state => state.auth)
  const {user} = auth
   const token = useSelector(state => state.token)
@@ -31,11 +30,22 @@ const auth = useSelector(state => state.auth)
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [fileName, setFileName] = useState(''); // Déclarer l'état fileName
+
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
   const [message, setMessage] = useState("");
 
-
+  const handleFileUpload = (filePath) => {
+    // Envoi du message avec le chemin du fichier
+    sendMessage({ content: `<img src="${filePath}" alt="Uploaded Image" style="max-width: 100%;">`,
+  });
+  };
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setFileName(selectedFile ? selectedFile.name : ''); // Mettez à jour le nom du fichier
+  };
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -173,6 +183,9 @@ const auth = useSelector(state => state.auth)
     }, timerLength);
   };
 //console.log(user._id) 
+
+console.log("User:", user);
+console.log("Selected Chat Users:", selectedChat);
   return (
     <>
       {selectedChat ? (
@@ -203,11 +216,11 @@ const auth = useSelector(state => state.auth)
               ) : (
                 <>
                   {selectedChat.chatName.toUpperCase()}
-                  <UpdateGroupChatModal
+                {user.role==1 &&  <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
                     setFetchAgain={setFetchAgain}
-                  />
+                  />}
                 </>
               ))}
           </Text>
@@ -221,7 +234,6 @@ const auth = useSelector(state => state.auth)
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
-          
           >
             {loading ? (
               <Spinner
@@ -242,10 +254,6 @@ const auth = useSelector(state => state.auth)
               id="first-name"
               isRequired
               mt={3}
-             // width="200Px"
-              //marginLeft="px"
-             // marginTop="280px"
-             // height="200Px"
             >
               {istyping ? (
                 <div>
@@ -253,28 +261,46 @@ const auth = useSelector(state => state.auth)
                     options={defaultOptions}
                     // height={50}
                     width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }} />
+                    style={{ marginBottom: 15, marginLeft: 0 }}
+                  />
                 </div>
               ) : (
                 <></>
               )}
+  {/*fileName && (
+                <img
+                  src={`http://localhost:5000/uploads/${fileName}`}
+                  alt="Uploaded Image"
+                  style={{ maxWidth: '100%', marginBottom: '15px' }}
+                />
+  )*/}
+
+              {/* Formulaire de téléchargement de fichier */}
+       {/* <FileUploadForm onFileUpload={handleFileUpload} handleFileChange={handleFileChange} />*/}
+
+              {/* Afficher le nom du fichier sélectionné */}
+              {fileName && <p>Selected File: {fileName}</p>}
+
+              {/* Zone de saisie pour le message */}
+
               <Input
                 variant="filled"
                 bg="#E0E0E0"
                 placeholder="Enter a message.."
                 value={newMessage}
                 onChange={typingHandler}
+              ></Input>
               
-              />
             </FormControl>
+          
           </Box>
         </>
       ) : (
         // to get socket.io on same page
         <Box d="flex" alignItems="center" justifyContent="center" h="100%">
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
-
-          Cliquez sur un utilisateur pour commencer à discuter          </Text>
+          Cliquez sur un utilisateur pour commencer à discuter
+          </Text>
         </Box>
       )}
     </>

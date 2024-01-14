@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react'
 import 'react-toastify/dist/ReactToastify.css';
-import { useParams, useNavigate } from "react-router-dom"
+import {useNavigate } from "react-router-dom"
 import {Box,Button} from '@mui/material';
 import './client.css'
 import {Link} from 'react-router-dom'
@@ -13,10 +13,7 @@ import './tab.css'
 
 
 const DevisPage = () => {
-const{id} =useParams()
-const axiosInstance = axios.create({
-  baseURL : process.env.REACT_APP_SERVER_URL,
-});
+
   const navigate =  useNavigate();
 
  
@@ -89,12 +86,15 @@ const devisAdmin = useSelector(state=> state.devisAdmin)
         }
       }, [
         dispatch,
-        successCreate,
+       // successCreate,
         createdDevis,
         token,
-        callback
-        
-      ])
+        callback,
+        dispatchGetAllDevisAdmin,
+        dispatchGetAllDevis,
+        auth,
+        fetchAllDevisAdmin,
+        fetchAllDevis,])
 
 
 
@@ -114,7 +114,7 @@ const devisAdmin = useSelector(state=> state.devisAdmin)
 
 					</Box>
 
-                    <div style={{overflowX: "auto" ,width:"1250px"}}>
+                    <div style={{overflowX: "auto" ,width:"100%"}}>
           <table className="customers rounded-table">
             <thead>
               <tr>
@@ -157,8 +157,8 @@ const devisAdmin = useSelector(state=> state.devisAdmin)
                   <td>{devis._id}</td>
                   <td>{devis.num}</td>
                   <td>{devis.date1}</td>
-                  <td>{devis.date}</td>
-                  <td>{devis.enga}</td>
+                  <td>{devis.date3}</td>
+                  <td>{devis.clientf}</td>
                   <td>{devis.total}</td> 
 
                   <td>
@@ -175,8 +175,8 @@ const devisAdmin = useSelector(state=> state.devisAdmin)
               ))}
             </tbody>}
           </table>
-{user.role==0 &&<h2>Total TTC: {totalSum}</h2>}
-{user.role==1 &&<h2>Total TTC: {totalSum2}</h2>}
+{user.role==0 &&<h2>Total TTC: {totalSum.toFixed(2)}</h2>}
+{user.role==1 &&<h2>Total TTC: {totalSum2.toFixed(2)}</h2>}
 
           </div>
 			

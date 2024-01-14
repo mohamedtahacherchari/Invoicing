@@ -19,11 +19,13 @@ const oauth2Client = new OAuth2(
 )
 
 // send mail
-const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,adresse,codePostale,nomFacture) => {
+const sendEmail = (to,num,date1,echa,facture,total,pdfData,txt) => {
     oauth2Client.setCredentials({
         refresh_token: MAILING_SERVICE_REFRESH_TOKEN
     })
-
+         // Convertir l'objet en JSON
+    const pdfDataJson = JSON.stringify(pdfData);
+    console.log(pdfData)
     const accessToken = oauth2Client.getAccessToken()
     const smtpTransport = nodemailer.createTransport({
         service: 'gmail',
@@ -48,10 +50,10 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
             <title>Facture</title>
             <style>
             .column {
-                flex-basis: 50%;
+                flex-basis: 10%;
               }
                 body {
-                    font-family: 'Whyte';
+                    font-family: 'Nunito', sans-serif;
                 }
              
             .container {
@@ -61,13 +63,7 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
 
 
       }
-                img {
-                    height: 25px;
-                    width: 250px;
-                    margin-top: 100px;
-                    display: flex;
-                    margin-left: -5px;
-                }
+              
                 p {
                     font-size: 10px;
                 }
@@ -134,7 +130,7 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
           
           .invoiceSummary div {
             border-bottom: 1px solid rgb(231, 231, 231);
-            font-family: "Roboto", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
             text-align: left;
             margin-left: 50%;
             font-size: 15px;
@@ -160,7 +156,7 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
           }
           
           .summaryItem input {
-            font-family: "Roboto", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
             font-size: 15px;
             border: none;
             outline: none;
@@ -181,7 +177,7 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
             color: green;
             cursor: pointer;
             display: inline-block;
-            font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+            font-family: 'Nunito', sans-serif;
             padding: 7px 20px;
             text-align: center;
             text-decoration: none;
@@ -206,7 +202,7 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
             color: green;
             cursor: pointer;
             display: inline-block;
-            font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+            font-family: 'Nunito', sans-serif;
             padding: 7px 20px;
             text-align: center;
             text-decoration: none;
@@ -268,28 +264,28 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
         </head>
         
         <body>
-        <div class="container" style="font-family: whyte;">
+        <div class="container" style='Nunito', sans-serif;">
             <form onSubmit={submitHandler} style="margin-left: 40px;">
             <div class="container">
             <div class="column">
-              <img src="https://res.cloudinary.com/dcdei4osp/image/upload/v1661343478/logo/logo_xc49qh.png" alt="logo"
-                style="height: 50px; width: 300px; display: flex; margin-left: -5px;" />
+              <img src="https://res.cloudinary.com/dcdei4osp/image/upload/v1692609330/green-links-logo-simplifie_mljnej.png" alt="logo"
+                 style="width :20% ; height : 30%"/>
               <div style="font-size: 10px;">111 rue Anselme Rondenay 94400 Vitry-sur-Seine France</div>
               <div style="font-size: 10px;">+33 (0) 1 88 32 77 68</div>
               <div style="font-size: 10px;">contact@greenlinks.fr</div>
               <div style="font-size: 10px;">www.greenlinks.fr</div>
             </div>
             <div class="column">
-              <div class="invoice-details" style="margin-top: 110px; margin-left: 200px;">
+              <div class="invoice-details"  style = "margin-right: 600px; width:300px ">
                 <div
-                  style="margin-left: 10px; text-shadow: 2px 2px 5px grey; font-size: 20px; ">
+                  style="text-shadow: 2px 2px 5px grey; ">
                   FACTURE-${num}</div>
                 <div class="small"
-                  style="margin-left: 10px; text-shadow:2px 2px 5px grey ; font-size: 15px ; ">
-                  Date de facturation: ${date1}</div>
+                  style="text-shadow:2px 2px 5px grey ; ">
+                  Date d'estimation : ${date1}</div>
                 <div class="small"
-                  style="margin-left: 10px; text-shadow: 2px 2px 5px grey; font-size: 15px ; ">
-                  Date d'échéance: ${echa}</div>
+                  style="text-shadow: 2px 2px 5px grey; ">
+                  Valable jusqu'au  : ${echa}</div>
               </div>
             </div>
           </div>
@@ -380,13 +376,13 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
               
                 End of invoice items loop --> 
               
-                  <td>${subTotal.toFixed(2)}</td>
+                  <td>${total.toFixed(2)}</td>
         
                   <td>${facture.Acompte} équivalent à
-                    ${facture.Acompte && facture.Acompte.slice ? (subTotal - (subTotal - (subTotal * (facture.Acompte.slice(0, -1) / 100)))).toFixed(2) : ""}
+                    ${facture.Acompte && facture.Acompte.slice ? (total - (total - (total * (facture.Acompte.slice(0, -1) / 100)))).toFixed(2) : ""}
                   </td>
                   <td>${date1}</td>
-                  <td>${facture.Acompte && facture.Acompte.slice ? (subTotal - (subTotal * (facture.Acompte.slice(0, -1) / 100))).toFixed(2) : ""}
+                  <td>${facture.Acompte && facture.Acompte.slice ? (total - (total * (facture.Acompte.slice(0, -1) / 100))).toFixed(2) : ""}
                   
                   Payé le ${echa}</td>
                 </tbody>
@@ -432,6 +428,14 @@ const sendEmail = (to,num,date1,echa,facture,totalHorsTva,subTotal,txt,Acompte,a
                
                 </html>  
         `,
+
+        attachments: [
+          {
+            filename: 'mon_Devis.pdf', // Name for the attachment
+            content: pdfDataJson, //The big problem hhhh
+             encoding: 'base64',
+
+          },] ,
     }
 
     smtpTransport.sendMail(mailOptions, (err, infor) => {

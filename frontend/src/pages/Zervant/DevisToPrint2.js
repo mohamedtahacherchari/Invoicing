@@ -5,6 +5,7 @@ import './facture.css';
 import PrintIcon from '@mui/icons-material/Print';
 import {Link} from 'react-router-dom'
 import moment from 'moment'
+import green from './green.png'
 import {makeStyles} from '@material-ui/core/styles';
 import {useSelector,useDispatch} from 'react-redux'
 import {initialState} from '../../pages/Zervant/initialState'
@@ -13,7 +14,7 @@ import {initialState3} from '../../pages/Zervant/initialState'
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { useReactToPrint } from 'react-to-print';
 import {Divider,Typography,TextField} from '@mui/material';
-import { listDevisDetails, updateDevis } from '../../redux/actions/servantActions/devisAction';
+import { listDevisDetails, updateDevis,envoyerMailAvecRemiseTotalEnPourcentage } from '../../redux/actions/servantActions/devisAction';
 import { DEVIS_UPDATE_RESET } from '../../redux/actions/servantActions/constant/constantZervant/devisConstant';
 import { dispatchGetAllClientf, fetchAllClientf } from '../../redux/actions/servantActions/clientfAction';
 import { dispatchGetAllProduct, fetchAllProduct } from '../../redux/actions/servantActions/productAction';
@@ -25,8 +26,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
+import { ToastContainer } from 'react-toastify';
+import EmailIcon from '@mui/icons-material/Email';
+import html2pdf from 'html2pdf.js';
 
-const ListDevis = () => {
+
+   const ListDevis = () => {
 
 
     const useStyles = makeStyles((theme) => ({
@@ -103,6 +108,7 @@ const [clientf, setClientf] = useState('');
 const today = new Date(date1);
 const [subTotal, setSubTotal] = useState(0)
 const [totalHT, setTotalHT] = useState(0)
+const [pdfData, setPdfData] = useState('');
 
 let echa = moment(today.getTime() +cond *24*60*60*1000).format("DD/MM/YYYY")
 /*********************/
@@ -217,151 +223,158 @@ const submitHandler= (e) => {
      onAfterPrint : ()=> alert('Print success')
  
       })
-return (
-<div style={{ fontFamily: 'Whyte'}} ref={componentRef}>
 
-     <form onSubmit={submitHandler} style={{marginLeft:"40px"}}>
-      <table>
-        <tbody>
-
-          <td>
-          <table>
-          <tbody>             <td>
-                <img
-     src="https://res.cloudinary.com/dcdei4osp/image/upload/v1661343478/logo/logo_xc49qh.png"
-     height="25px"
-     width="250px"
-     marginTop="100px"
-     //alt="logo"
-     sx={{display: 'flex',ml: -5 }}/>
-     <p style={{fontSize: "10px",}}>111 rue Anselme Rondenay 94400 Vitry-sur-Seine France</p>
-    <p style={{fontSize: "10px",}}>+33 (0) 1 88 32 77 68</p>
-    <p style={{fontSize: "10px",}}>contact@greenlinks.fr </p>
-    <p style={{fontSize: "10px",}}>www.greenlinks.fr</p>
-                </td>
-	        <td>
-            
-          <h1 style={{width:"250px",height:"50px", marginLeft:"50px", marginTop:"200px"}}> 
-        Bonjour monsieur  : {devis.clientf}
+      const envoyerMailAvecRemiseTotal = async()=>{
+        let pdfData; // Déclarer pdfData ici pour qu'il soit accessible en dehors du bloc try
        
-          </h1>
-          </td>
-          {/*clientfs.map((client,index) =>{
-              return(
-                <div key={index} className={styles.summaryItem}>
-                <h4>{client.Surname}</h4>
-               
-                </div>
-                 )})}
+        try {
+          pdfData = await generatePDF(); // Utilisez la variable déjà déclarée
+          console.log(pdfData);
+          await envoyerMailAvecRemiseTotalEnPourcentage(id, token,pdfData)(dispatch);
+        } catch (error) {
+          console.error("Erreur lors de l'envoi du mail :", error);
+          // Gérer l'erreur de manière appropriée (affichage d'un message, journalisation, etc.)
+        }
+      }
 
-    
-               {/*clientfs.filter(client=> client.Firstname==clientf).map(filteredName => (
-    <h1>
-      {filteredName.Firstname}
-    </h1>
-               ))*/}
-           
-	         <td>
-                <div style={{marginTop:"0px"}}>     
-            <Typography 
-            variant="h6" gutterBottom 
-            style={{marginLeft: "10px",
-             textShadow: "2px 2px 5px grey" ,
-              fontSize: "20px",
-             marginTop :"10px",}}> 
-              DEVIS-{num}</Typography>
-              <Typography 
-            variant="h6" gutterBottom 
-            style={{marginLeft: "10px",
-             textShadow: "2px 2px 5px grey" ,
-              fontSize: "15px",
-             marginTop :"10px",}}> 
-            Date d'estimation:{date1}</Typography>
-              <Typography 
-            variant="h6" gutterBottom 
-            style={{marginLeft: "10px",
-             textShadow: "2px 2px 5px grey" ,
-              fontSize: "15px",
-             marginTop :"10px",}}> 
-              Valable jusqu'au : {devis.date3}</Typography>
-              </div>
-              </td>
-	           </tbody>
-             </table>
-             </td>
-       </tbody>
-       </table> 
-       <div>
+      const generatePDF = async () => {
+        const content = componentRef.current;
+          // Define the options for the PDF generation
+      
+          const options = {
+            margin: 10,
+            filename: 'mon_fichier.pdf',
+            image: { type: 'jpeg' },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm',  format: [310, 290], orientation: 'portrait' },
+          };
+        // Use html2pdf to generate the PDF from HTML content
+          const pdf = await html2pdf().from(content).set(options).outputPdf();
+        // Convert the PDF to a data URI and set it in the state
+          //const pdfDataUri = 'data:application/pdf;base64,' + btoa(pdf);  btoa fonctionne 
+          //correctement comme customBtoa
+            const pdfDataUri = 'data:application/pdf;base64,' + customBtoa(pdf);
+  
+          setPdfData(pdfDataUri);
+        // Return the pdfDataUri
+          return pdfDataUri;
+        };
+  
+              
+        function customBtoa(input) {
+          const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+          let output = '';
+        
+          for (let i = 0; i < input.length; i += 3) {
+            const a = input.charCodeAt(i);
+            const b = input.charCodeAt(i + 1);
+            const c = input.charCodeAt(i + 2);
+        
+            const combined = (a << 16) | (b << 8) | c;
+        
+            for (let j = 0; j < 4; j++) {
+              if (i + j * 3 <= input.length * 8) {
+                const index = (combined >> (6 * (3 - j))) & 0x3F;
+                output += charSet.charAt(index);
+              } else {
+                output += '=';
+              }
+            }
+          }
+        
+          return output;
+        }
+        
 
-        Devise :
-       <TextField 
-       variant="standard"
-       label=""
-       value={devis.saveDevise}/>
-<TableContainer component={Paper} className="tb-container"
-style={{marginTop:"50px" , marginRight:"400px", width:"930px"}}
->
-<Table className={classes.table} aria-label="simple table">
+
+return (
+<div style={{ fontFamily: 'Whyte'}}>
+<ToastContainer/>
+     <form onSubmit={submitHandler} style={{marginLeft:"40px"}}>
+      <div ref={componentRef}>
+      <div style={{ display: "flex" }}>
+
+      {/* Première colonne */}
+  <div style={{ flex: 1, marginLeft: "30px", marginTop: "60px" }}>
+     <img src={green} alt="Node Image" width="80%"/>
+     <p>111 rue Anselme Rondenay 94400 Vitry-sur-Seine France</p>
+     <p>+33 (0) 1 88 32 77 68</p>
+     <p>contact@greenlinks.fr </p>
+     <p>www.greenlinks.fr</p>
+     </div>
+           {/* Deuxième colonne */}
+           <div class="responsive-container">
+  <p class="item">
+    DEVIS-{num}
+  </p>
+  <p class="item">
+    Date d'estimation: {date1}
+  </p>
+  <p class="item">
+    Valable jusqu'au: {devis.date3}
+  </p>
+           </div>
+  </div>
+       
+
+       <div style={{width:"",height:"50px", marginLeft:"px", marginTop:"50px"}}> 
+          <div>{devis.nomDevis}</div>
+           <div>{devis.clientf}</div>
+           <div>{devis.email}</div> 
+           <div>{devis.adresse}</div> 
+           <div>Devise : {devis.saveDevise}</div>
+          </div>
+
+          <TableContainer component={Paper} className="tb-container" style={{ marginTop: "80px", marginRight: "400px", width: "100%" }}>
+  <Table className={classes.table} aria-label="simple table">
     <TableHead>
-    <TableRow>
+      <TableRow>
         <TableCell>Produit</TableCell>
-        <TableCell >date</TableCell>
+        <TableCell>date</TableCell>
         <TableCell>Qté</TableCell>
-        <TableCell >Unité</TableCell>
-        <TableCell >Prix</TableCell>
-        <TableCell >TVA%</TableCell>
-        <TableCell >Montant HT</TableCell>
-        <TableCell >Montant</TableCell>
-
-    </TableRow>
+        <TableCell>Unité</TableCell>
+        <TableCell>Prix</TableCell>
+        <TableCell>TVA%</TableCell>
+        <TableCell>Montant HT</TableCell>
+        <TableCell>Montant</TableCell>
+      </TableRow>
     </TableHead>
     <TableBody>
-    {invoiceData.items.map((itemField, index) => (
-<TableRow key={index} style={{width:"1000px"}}>
-<TableCell scope="row" style={{width: '20%'}}><h1 name="product">{itemField.product}</h1> </TableCell>
-<TableCell align="right"> <InputBase sx={{ ml: 1, flex: 1,}}   style={{ width:"100px" }} name="date2" value={itemField.date2}  /> </TableCell>
-<TableCell align="right"> <InputBase sx={{ ml: 1, flex: 1 }} type="number" name="qte"   value={itemField.qte} placeholder="0" /> </TableCell>
-<TableCell style={{marginRight:"200px"}}>{itemField.unite}</TableCell>
-<TableCell align="right"> <InputBase sx={{ ml: 1, flex: 1 }} type="prix" name="prix"  value={itemField.prix} /> </TableCell>
-<TableCell style={{marginRight:"200px"}}>{itemField.tva}</TableCell>
-<TableCell align="right"> 
-<InputBase sx={{ ml: 1, flex: 1 }} type="prix" name="montantHT" 
-        value={itemField.montantHT=itemField.qte*itemField.prix} /> 
-        </TableCell>
-        <TableCell align="right"> 
-        <InputBase sx={{ ml: 1, flex: 1 }} type="prix" name="montant"
-    value={(itemField.montant= (itemField.qte*itemField.prix)+(itemField.qte*itemField.prix)*itemField.tva/100).toFixed(2)}/> 
-      </TableCell>
-      </TableRow>))}
+      {invoiceData.items.map((itemField, index) => (
+        <TableRow key={index}>
+          <TableCell>
+            <h1 name="product">{itemField.product}</h1>
+          </TableCell>
+          <TableCell>{itemField.date2}</TableCell>
+          <TableCell>{itemField.qte}</TableCell>
+          <TableCell>{itemField.unite}</TableCell>
+          <TableCell>{itemField.prix}</TableCell>
+          <TableCell>{itemField.tva}</TableCell>
+          <TableCell>
+            {(itemField.qte * itemField.prix * (1 - itemField.remisePourcent / 100)).toFixed(2)}
+          </TableCell>
+          <TableCell>
+            {(
+              (itemField.qte * itemField.prix) * (1 - itemField.remisePourcent / 100) +
+              (itemField.qte * itemField.prix) * (itemField.tva / 100)
+            ).toFixed(2)}
+          </TableCell>
+        </TableRow>
+      ))}
     </TableBody>
-</Table>
+  </Table>
 </TableContainer>
 
-         
-              <div style={{marginLeft:"550px"}}>
-                <table>
-                    <tbody>
-                         <td>
-        <Typography variant="p" >
-               Remise 
-               </Typography></td>
-      <td>
-          <TextField
-           id="out"
-           label=""
-           value={devis.remisetotal}
-          // placeholder="remise"
-          variant="standard"
-           style={{marginLeft:"75px", width:"30px"}}/>%
-         </td>
-         </tbody>
-         </table>
-              </div>
+<div class="remise-container">
+        Remise : {devis.remisetotal} %
+    </div>
+
+  
 <div className={styles.invoiceSummary} style={{marginLeft:"0px" ,marginTop:"50px"}}>
-          <div className={styles.summary}>Résumé de devis</div>
+          <div className={styles.summary}>Résumé </div>
           <div className={styles.summaryItem}>
           <p>Total HT:</p>
-          <h4>{totalHT}</h4>
+          <h4>{(devis.totalHorsTva-devis.remisetotal2).toFixed(2)}</h4>
           </div>
             {invoiceData.items && invoiceData.items.map((itemField,index) =>{
               return(
@@ -370,32 +383,24 @@ style={{marginTop:"50px" , marginRight:"400px", width:"930px"}}
                 <h4>{itemField.tva}</h4>
                 </div>
                  )})}
-
-
             <div className={styles.summaryItem}>
-            <p>Remise (%):</p>
-           <h4>{devis.remisetotal}</h4>
-          </div>
-    
-            <div className={styles.summaryItem}>
-            <p>Total dû</p>
-                <h4 name="subTotal" style={{color: "grey", fontSize: "18px", lineHeight: "8px"}}>{(subTotal -(devis.remisetotal / subTotal) * 100).toFixed(2)}</h4>
+                <p>Total dû</p>
+                <h4 name="subTotal" style={{color: "grey", fontSize: "18px", lineHeight: "8px"}}>{devis.total}</h4>
             </div>
 
-       
+                
             </div>
  
-</div>
 
-
-
-           <h1 style={{marginTop:"80px"}} >Signature du client</h1>
-            <p style={{marginBottom:"120px"}}>(Signé et accepté)</p> 
-
+      <h1 style={{marginTop:"80px"}} >Signature du client</h1>
+      <p style={{marginBottom:"120px"}}>(Signé et accepté)</p>
+    </div>
        <button onClick={handlePrint} variant='success'className="print-button" style={{color:"green"}}>
        <PrintIcon/>   Imprimer et/ou PDF </button>
        </form>
-               
+       <button onClick={envoyerMailAvecRemiseTotal} variant='success'className="print-button" style={{color:"green",marginLeft:"40px"}}>
+      <EmailIcon/> Envoyez par mail</button>        
 
-       </div>)}
+       </div>
+       )}
     export default ListDevis

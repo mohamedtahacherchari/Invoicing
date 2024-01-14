@@ -16,7 +16,17 @@ import{
     DEVIS_LIST_SUCCESS,
     DEVIS_UPDATE_FAIL,
     DEVIS_UPDATE_REQUEST,
-    DEVIS_UPDATE_SUCCESS
+    DEVIS_UPDATE_SUCCESS,
+    ENVOYER_MAIL_SUCCESS,
+    ENVOYER_MAIL_FAILURE,
+    ENVOYER_MAIL2_SUCCESS,
+    ENVOYER_MAIL2_FAILURE,
+    ENVOYER_MAIL3_SUCCESS,
+    ENVOYER_MAIL3_FAILURE,
+    ENVOYER_MAIL4_SUCCESS,
+    ENVOYER_MAIL4_FAILURE,
+    ENVOYER_MAIL5_SUCCESS,
+    ENVOYER_MAIL5_FAILURE
 } 
 from '../../actions/servantActions/constant/constantZervant/devisConstant'
 
@@ -206,3 +216,203 @@ const axiosInstance = axios.create({
           }
         }
         
+export const envoyerMailSansRemise = (id,token,pdfData) => async (dispatch) => {
+          try {
+            const res = await axios.post(`/api/devis/sendMailwithoutDelivery/${id}`,{pdfData}, {
+              headers: {Authorization: token }});
+            console.log(res.data);
+
+
+    toast.success('Le message a été envoyé avec succès.' , {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+  });
+            // Dispatch d'une action réussie si nécessaire
+            dispatch({
+              type: ENVOYER_MAIL_SUCCESS,
+              payload: res.data,
+            });
+          } catch (error) {
+            console.log(error);
+                // Afficher le popup d'échec
+    toast.error("Erreur lors de l\'envoi du message.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+  });
+            // Dispatch d'une action d'échec si nécessaire
+            dispatch({
+              type: ENVOYER_MAIL_FAILURE,
+              payload: error.message,
+            });
+          }
+        };
+
+
+ export const envoyerMailAvecRemiseTotalEnPourcentage = (id, token,pdfData) => async (dispatch) => {
+    try {
+      const res = await axios.post(`/api/devis/sendMailwithDeliveryTotalInPercentage/${id}`,{pdfData}, {
+      headers: { Authorization: token },});
+      console.log(res.data);
+      toast.success('Le message a été envoyé avec succès.', {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,});
+        // Dispatch d'une action réussie si nécessaire
+        dispatch({
+              type: ENVOYER_MAIL2_SUCCESS,
+              payload: res.data,
+            });
+          } catch (error) {
+            console.log(error);
+            // Afficher le popup d'échec
+            toast.error("Erreur lors de l'envoi du message.", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+        
+            // Dispatch d'une action d'échec si nécessaire
+            dispatch({
+              type: ENVOYER_MAIL2_FAILURE,
+              payload: error.message,
+            });
+          }
+        };
+        
+export const envoyerMailAvecRemiseTotalEnDevise = (id, token,pdfData) => async (dispatch) => {
+          try {
+            const res = await axios.post(`/api/devis/sendMailwithDeliveryTotalInDevise/${id}`, {pdfData},{
+            headers: { Authorization: token },});
+            console.log(res.data);
+            toast.success('Le message a été envoyé avec succès.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,});
+              // Dispatch d'une action réussie si nécessaire
+              dispatch({
+                    type: ENVOYER_MAIL3_SUCCESS,
+                    payload: res.data,
+                  });
+                } catch (error) {
+                  console.log(error);
+                  // Afficher le popup d'échec
+                  toast.error("Erreur lors de l'envoi du message.", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                  });
+              
+                  // Dispatch d'une action d'échec si nécessaire
+                  dispatch({
+                    type: ENVOYER_MAIL3_FAILURE,
+                    payload: error.message,
+                  });
+                }
+              };
+export const envoyerMailAvecRemiseParLigneEnPourcentage = (id, token,pdfData) => async (dispatch) => {
+                try {
+                  const res = await axios.post(`/api/devis/sendMailwithDeliveryParLigneInPercentage/${id}`,{pdfData},{
+                  headers: { Authorization: token },});
+                  console.log(res.data);
+                  console.log(pdfData);
+
+                  toast.success('Le message a été envoyé avec succès.', {
+                          position: "top-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,});
+                    // Dispatch d'une action réussie si nécessaire
+                    dispatch({
+                          type: ENVOYER_MAIL4_SUCCESS,
+                          payload: res.data,
+                        });
+                      } catch (error) {
+                        console.log(error);
+                        // Afficher le popup d'échec
+                        toast.error("Erreur lors de l'envoi du message.", {
+                          position: "top-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                        });
+                    
+                        // Dispatch d'une action d'échec si nécessaire
+                        dispatch({
+                          type: ENVOYER_MAIL4_FAILURE,
+                          payload: error.message,
+                        });
+                      }
+                    };
+
+export const envoyerMailAvecRemiseParLigneEnDevise = (id, token,pdfData) => async (dispatch) => {
+        try {
+        const res = await axios.post(`/api/devis/sendMailwithDeliveryParLigneInDevise/${id}`,{pdfData}, {
+        headers: { Authorization: token },});
+        console.log(res.data);
+        console.log(pdfData);
+
+        toast.success('Le message a été envoyé avec succès.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,});
+                    // Dispatch d'une action réussie si nécessaire
+                    dispatch({
+                      type: ENVOYER_MAIL5_SUCCESS,
+                        payload: res.data,
+                              });
+                            } catch (error) {
+                              console.log(error);
+                              // Afficher le popup d'échec
+                              toast.error("Erreur lors de l'envoi du message.", {
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                              });
+                          
+                              // Dispatch d'une action d'échec si nécessaire
+                              dispatch({
+                                type: ENVOYER_MAIL5_FAILURE,
+                                payload: error.message,
+                              });
+                            }
+                          };        

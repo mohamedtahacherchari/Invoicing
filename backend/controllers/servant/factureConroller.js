@@ -392,20 +392,21 @@ const fechLastTotal = asyncHandler(async (req, res) => {
 const sendMailwithoutDelivery = asyncHandler(async (req, res) => {
 
   try {
+    const pdfData = req.body ;
   const facture = await Facture.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
          let num = facture.num
          let date1 = facture.date1
          let echa = facture.echa
          let email = facture.email
          let totalHT =facture.totalHT
-         let subTotal =facture.subTotal
+         let total =facture.total
          let items = facture.items
          let Acompte = facture.Acompte
          let adresse = facture.adresse
          let codePostale = facture.codePostale
          let totalHorsTva = facture.totalHorsTva
          let nomFacture = facture.nomFacture
-         senddynamictxtMail(email,num,date1,echa,facture,totalHT,subTotal,items,Acompte,adresse,codePostale,totalHorsTva,nomFacture)
+         senddynamictxtMail(email,num,date1,echa,facture,total,pdfData)
          res.status(200).json({ message: 'Email sent succefully' })
   } catch (err) {
     return res.status(500).json({msg: err.message})
@@ -418,6 +419,7 @@ const sendMailwithDeliveryTotalInPercentage
 = asyncHandler(async (req, res) => {
 
   try {
+  const pdfData = req.body ;
   const facture = await Facture.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
          let num = facture.num
          let date1 = facture.date1
@@ -433,7 +435,8 @@ const sendMailwithDeliveryTotalInPercentage
          let nomFacture = facture.nomFacture
          let remisetotal = facture.remisetotal
          let total = facture.total
-         senddynamictxtMail2(email,num,date1,echa,facture,totalHT,subTotal,items,Acompte,adresse,codePostale,totalHorsTva,nomFacture,remisetotal,total)
+        // console.log(pdfData)
+         senddynamictxtMail2(email,num,date1,echa,facture,totalHorsTva,total,pdfData)
          res.status(200).json({ message: 'Email sent succefully' })
   } catch (err) {
     return res.status(500).json({msg: err.message})
@@ -446,6 +449,7 @@ const sendMailwithDeliveryTotalInDevise
 = asyncHandler(async (req, res) => {
 
   try {
+    const pdfData = req.body;
   const facture = await Facture.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
          let num = facture.num
          let date1 = facture.date1
@@ -461,7 +465,7 @@ const sendMailwithDeliveryTotalInDevise
          let nomFacture = facture.nomFacture
          let total = facture.total
          let remisetotal2 = facture.remisetotal2
-         senddynamictxtMail3(email,num,date1,echa,facture,totalHT,subTotal,items,Acompte,adresse,codePostale,totalHorsTva,nomFacture,remisetotal2,total)
+         senddynamictxtMail3(email,num,date1,echa,facture,total,pdfData)
          res.status(200).json({ message: 'Email sent succefully' })
   } catch (err) {
     return res.status(500).json({msg: err.message})
@@ -474,6 +478,7 @@ const sendMailwithDeliveryParLigneInPercentage
 = asyncHandler(async (req, res) => {
 
   try {
+    const pdfData = req.body;
   const facture = await Facture.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
          let num = facture.num
          let date1 = facture.date1
@@ -490,7 +495,7 @@ const sendMailwithDeliveryParLigneInPercentage
          let total = facture.total
          let remiseParLignePourcent = facture.remiseParLignePourcent
          let remisePourcent = facture.remisePourcent
-         senddynamictxtMail4(email,num,date1,echa,facture,totalHT,subTotal,items,Acompte,adresse,codePostale,totalHorsTva,nomFacture,remiseParLignePourcent,total,remisePourcent)
+         senddynamictxtMail4(email,num,date1,echa,facture,total,pdfData)
          res.status(200).json({ message: 'Email sent succefully' })
   } catch (err) {
     return res.status(500).json({msg: err.message})
@@ -503,6 +508,7 @@ const sendMailwithDeliveryParLigneInDevise
 = asyncHandler(async (req, res) => {
 
   try {
+    const pdfData = req.body;
   const facture = await Facture.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
          let num = facture.num
          let date1 = facture.date1
@@ -520,7 +526,7 @@ const sendMailwithDeliveryParLigneInDevise
          let remiseParLignePourcent = facture.remiseParLignePourcent
          let remise = facture.remise
          let totalRemise = facture.totalRemise
-         senddynamictxtMail5(email,num,date1,echa,facture,totalHT,subTotal,items,Acompte,adresse,codePostale,totalHorsTva,nomFacture,remiseParLignePourcent,total,remise,totalRemise)
+         senddynamictxtMail5(email,num,date1,echa,facture,total,pdfData)
          res.status(200).json({ message: 'Email sent succefully' })
   } catch (err) {
     return res.status(500).json({msg: err.message})

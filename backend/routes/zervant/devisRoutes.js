@@ -9,6 +9,12 @@ const {
     getDevisById,
     updateDevis,
     getDevisAdmin,
+    sendMailwithoutDelivery,
+    sendMailwithDeliveryTotalInPercentage,
+    sendMailwithDeliveryTotalInDevise,
+    sendMailwithDeliveryParLigneInPercentage,
+    sendMailwithDeliveryParLigneInDevise,
+    sendEmailWithAttachment,
 
     
 } = require('../../controllers/servant/devisControllers')
@@ -19,6 +25,13 @@ router.route('/:id').get(auth,getDevisById)
 router.route('/adddevis').post(auth,createDevis)
 router.route('/:id').delete(auth,deleteDevis)
 router.route('/:id').put(auth,updateDevis)
+//router.route('/upload').get(sendEmailWithAttachment)
+router.route('/sendMailwithoutDelivery/:id').post(auth,sendMailwithoutDelivery)
+router.route('/sendMailwithDeliveryTotalInPercentage/:id').post(auth,sendMailwithDeliveryTotalInPercentage)
+router.route('/sendMailwithDeliveryTotalInDevise/:id').post(auth,sendMailwithDeliveryTotalInDevise)
+router.route('/sendMailwithDeliveryParLigneInPercentage/:id').post(auth,sendMailwithDeliveryParLigneInPercentage)
+router.route('/sendMailwithDeliveryParLigneInDevise/:id').post(auth,sendMailwithDeliveryParLigneInDevise)
+
 
 
 

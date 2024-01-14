@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
+import {useParams} from 'react-router-dom'
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -22,7 +23,12 @@ import { useDispatch } from 'react-redux'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
 import GoogleOneTapLogin from './GoogleOneTapLogin';
+import { Routes, Route } from 'react-router-dom'
 const theme = createTheme();
+
+
+
+
 
 function Copyright(props) {
 	return (
@@ -44,12 +50,10 @@ const InitialState = {
 }
 
 export default function SignIn() {
-
-	const [user, setUser] = useState(InitialState);
+    const [user, setUser] = useState(InitialState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	const {email, password} = user
+     const {email, password} = user
 
 	const handleChangeInput = e => {
 		const {name, value} = e.target
@@ -66,7 +70,8 @@ export default function SignIn() {
 	const handleMouseDown = (e)=>{
 		e.preventDefault()
 	} 
-	
+
+
 	const handleSubmit = async(event) => {
 
 		event.preventDefault();
@@ -115,8 +120,10 @@ export default function SignIn() {
 		}
 
 	};
-	
+
 	return (
+		<div>
+	{ /*   <EmailActivation/>*/}
 		<ThemeProvider theme={theme}>
 		<Grid container component="main" sx={{ height: '100vh' }}>
 			<CssBaseline />
@@ -226,5 +233,8 @@ export default function SignIn() {
 			</Grid>
 		</Grid>
 		</ThemeProvider>
+		
+	        	
+		</div>
 	);
 }

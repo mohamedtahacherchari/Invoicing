@@ -12,6 +12,8 @@ const factureRoutes = require("./routes/zervant/factureRoutes");
 const devisRoutes = require("./routes/zervant/devisRoutes");
 const candidatRoutes = require("./routes/Candidat/candidatRoutes");
 const  path = require('path')
+const multer = require('multer');
+
 //const upload = require('./routes/zervant/upload');
 
 
@@ -60,15 +62,25 @@ app.use("/api/devis", devisRoutes);
 //const __dirname = path.resolve()
 //app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 app.use(errorHandler)
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Répertoire de stockage des fichiers téléchargés
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  // Gérer le fichier téléchargé, par exemple, enregistrer le chemin du fichier dans la base de données
+  // Envoyer une réponse au client indiquant que le téléchargement a réussi
+  res.json({ message: 'Téléchargement réussi' });
+});
 connectDB();
-//Serve Static assets if in production 
-if(process.env.NODE_ENV === 'production'){
-  //Set static folder
-  app.use(express.static('frontend/build'));
-  app.get('*',(req,res)=>{
-    res.sendFile(path.resolve(__dirname,'frontend', 'build','index.html'))
-  })
-}
+
 server =app.listen(port, () => console.log(`Server started on port ${port}`));
 
 const io = require("socket.io")(server, {

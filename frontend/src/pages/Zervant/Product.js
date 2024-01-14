@@ -108,7 +108,7 @@ const productList = useSelector((state) => state.productList)
 
 					</Box>
 
-                    <div style={{overflowX: "auto" ,width:"1250px"}}>
+                    <div style={{overflowX: "auto" ,width:"125%"}}>
           <table className="customers  rounded-table" >
             <thead>
               <tr>

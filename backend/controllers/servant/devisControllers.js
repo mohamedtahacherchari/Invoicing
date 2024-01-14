@@ -1,6 +1,12 @@
 const asyncHandler = require('express-async-handler')
 //const Product = require('../../models/Zervant/produitModel')
 const Devis = require('../../models/Zervant/devisModel')
+const senddynamictxtMail = require('./mailDevis/senddynamictxtMail');
+const senddynamictxtMail2 = require('./mailDevis/senddynamictxtMail2');
+const senddynamictxtMail3 = require('./mailDevis/senddynamictxtMail3');
+const senddynamictxtMail4 = require('./mailDevis/senddynamictxtMail4');
+const senddynamictxtMail5 = require('./mailDevis/senddynamictxtMail5');
+const sendPdfMail1 = require('./mailDevis/sendPdfMail1');
 
 // @desc    Fetch all devis
 // @route   GET /api/devis
@@ -173,6 +179,9 @@ const updateDevis = asyncHandler(async (req, res) => {
      Acompte3,
      Acompte4,
      Acompte,
+     email,
+     adresse,
+     codePostale,
      showAcompte,
      showMontantOriginaleHT,
      showMontantOriginale,
@@ -187,6 +196,7 @@ const updateDevis = asyncHandler(async (req, res) => {
      showResumeFactureDevise,
      showResumeFacturePourcent,
      totalHorsTva,
+     nomDevis,
   }
     
 
@@ -285,6 +295,10 @@ const updateDevis = asyncHandler(async (req, res) => {
     devis.showSansRemise=showSansRemise,
     devis.showResumeFactureDevise=showResumeFactureDevise,
     devis.showResumeFacturePourcent=showResumeFacturePourcent,
+    devis.nomDevis= nomDevis,
+    devis.email=email,
+    devis.adresse =adresse,
+    devis.codePostale=codePostale,
     devis.totalHorsTva =totalHorsTva
     const updatedDevis = await devis.save();
 
@@ -299,6 +313,128 @@ const updateDevis = asyncHandler(async (req, res) => {
 })
 
 
+const sendMailwithoutDelivery = asyncHandler(async (req, res) => {
+
+  try {
+    const pdfData = req.body;
+  const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+        // let adresse = devis.adresse
+         let email = devis.email
+         let num = devis.num
+         let date1 = devis.date1
+         let date3 = devis.date3
+         let saveDevise = devis.saveDevise
+         let subTotal = devis.subTotal
+
+         senddynamictxtMail(email,num,date1,date3,devis,saveDevise,subTotal,pdfData)
+
+         res.status(200).json({ message: 'Email sent succefully' })
+  } catch (err) {
+    return res.status(500).json({msg: err.message})
+}
+ 
+})
+
+
+const sendMailwithDeliveryTotalInPercentage
+= asyncHandler(async (req, res) => {
+
+  try {
+    const pdfData = req.body;
+
+  const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+         let num = devis.num
+         let date1 = devis.date1
+         let date3= devis.date3
+         let email = devis.email
+         let saveDevise = devis.saveDevise
+         let subTotal = devis.subTotal
+         let remisetotal = devis.remisetotal
+         senddynamictxtMail2(email,num,date1,date3,devis,saveDevise,remisetotal,subTotal,pdfData)
+         res.status(200).json({ message: 'Email sent succefully' })
+  } catch (err) {
+    return res.status(500).json({msg: err.message})
+}
+ 
+})
+
+
+const sendMailwithDeliveryTotalInDevise = asyncHandler(async (req, res) => {
+try {
+
+  const pdfData = req.body;
+
+const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+         let num = devis.num
+         let date1 = devis.date1
+         let date3 = devis.date3
+         let email = devis.email
+         senddynamictxtMail3(email,num,date1,date3,devis,pdfData)
+         res.status(200).json({ message: 'Email sent succefully' })
+  } catch (err) {
+    return res.status(500).json({msg: err.message})
+}
+ 
+})
+
+
+const sendMailwithDeliveryParLigneInPercentage
+= asyncHandler(async (req, res) => {
+
+  try {
+    const pdfData = req.body;
+  const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+         let num   = devis.num
+         let date1 = devis.date1
+         let date3 = devis.date3
+         let email = devis.email
+     
+         senddynamictxtMail4(email,num,date1,date3,devis,pdfData)
+         res.status(200).json({ message: 'Email sent succefully' })
+  } catch (err) {
+    return res.status(500).json({msg: err.message})
+}
+ 
+})
+
+
+const sendMailwithDeliveryParLigneInDevise
+= asyncHandler(async (req, res) => {
+
+  try {
+     //console.log(req.body)
+        const pdfData = req.body;
+
+        const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+     
+         let num = devis.num
+         let date1 = devis.date1
+         let date3 = devis.date3
+         let email = devis.email
+
+         senddynamictxtMail5(email,num,date1,date3,devis,pdfData)
+         res.status(200).json({ message: 'Email sent succefully' })
+  } catch (err) {
+    return res.status(500).json({msg: err.message})
+}
+ 
+})
+
+/*const sendEmailWithAttachment = async (req, res) => {
+  try {
+    const devis = await Devis.findById({_id:req.params.id,user:req.user.id}).populate("user", "firstName");
+    let email = devis.email
+    const pdfData = req.body;
+    await sendPdfMail1(email,pdfData); // Attendre la fin de l'opération asynchrone
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to send the email.' });
+  }
+};*/
+
+
 
 module.exports= {
   updateDevis,
@@ -307,5 +443,11 @@ module.exports= {
   deleteDevis,
   createDevis,
   getDevisAdmin,
+  sendMailwithoutDelivery,
+  sendMailwithDeliveryTotalInPercentage,
+  sendMailwithDeliveryTotalInDevise,
+  sendMailwithDeliveryParLigneInPercentage,
+  sendMailwithDeliveryParLigneInDevise
+ // sendEmailWithAttachment
 
 }

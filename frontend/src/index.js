@@ -8,22 +8,19 @@ import { ChakraProvider } from "@chakra-ui/react";
 import ChatProvider from "./Chat/context/ChatProvider";
 import { BrowserRouter } from "react-router-dom";
 
+const rootElement = document.getElementById('root');
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render( 
-
-<BrowserRouter>
-	<ChakraProvider>
-     <DataProvider>  
-      <ChatProvider>
-  
-    <App/>
-   
-    </ChatProvider>
-     </DataProvider>
-   
-  </ChakraProvider>
-  </BrowserRouter>,
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <BrowserRouter>
+    <ChakraProvider>
+      <DataProvider>
+        <ChatProvider>
+          <App />
+        </ChatProvider>
+      </DataProvider>
+    </ChakraProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

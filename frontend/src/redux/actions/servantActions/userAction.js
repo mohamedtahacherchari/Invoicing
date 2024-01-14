@@ -26,9 +26,7 @@ import {
   USER_UPDATE_REQUEST,
 } from './constant/constantZervant/userConstant'
 //import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
-const axiosInstance = axios.create({
-  baseURL : process.env.REACT_APP_SERVER_URL,
-});
+
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
