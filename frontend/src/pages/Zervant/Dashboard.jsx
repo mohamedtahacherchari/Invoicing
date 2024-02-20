@@ -296,8 +296,7 @@ const doughnutStateAdmin = {
         enRetardPlus30JoursAdmin.length,
       ]);
     }}
-  }, [user.role, token,nonEchues,enRetardMoins30Jours,enRetardPlus30Jours,
-    nonEchuesAdmin,enRetardMoins30JoursAdmin,enRetardPlus30JoursAdmin]);
+  }, [user.role, token, setData, data]);
   return (
         <>
             <MetaData title="Facture Dashboard | Flipkart" />

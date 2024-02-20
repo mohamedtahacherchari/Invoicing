@@ -4,227 +4,129 @@ const jwt = require('jsonwebtoken')
 const sendMail = require('./sendMail')
 const sendMail2 = require('./sendMail2')
 const generateToken = require('../utils/generateToken')
-  
-const {CLIENT_URL} = process.env 
-   
+const { CLIENT_URL } = process.env 
+const session = require('express-session');
 
 const userController = {
-    register : async (req, res) => {
+    register: async (req, res) => {
         try {
-            const {firstName, lastName, email, password} = req.body
+            const { firstName, lastName, email, password } = req.body
 
-            if(!email || !password || !firstName|| !lastName)
-                return res.status(400).json({msg : "Please fill in all fields ."})
+            if (!email || !password || !firstName || !lastName)
+                return res.status(400).json({ msg: "Please fill in all fields." })
 
-            if(!validateEmail(email))
-                return res.status(400).json({msg : "Invalid email ."})
+            if (!validateEmail(email))
+                return res.status(400).json({ msg: "Invalid email." })
 
-            const user = await Users.findOne({email})
-            if(user) return res.status(400).json({msg : "This email already exists ."})
+            const user = await Users.findOne({ email })
+            if (user) return res.status(400).json({ msg: "This email already exists." })
 
             if (password.length < 6)
-                return res.status(400).json({msg : "Password must be at least 6 characters ."})
+                return res.status(400).json({ msg: "Password must be at least 6 characters." })
 
             const passwordHash = await bcrypt.hash(password, 12)
 
             const newUser = {
                 firstName, lastName, email, password: passwordHash
             }
-            
-     /*The newest*/    //       const activation_token = generateToken(user._id)
-                const activation_token = createActivationToken(newUser)
 
+            const activation_token = createActivationToken(newUser)
 
             const url = `${CLIENT_URL}/active/${activation_token}`
 
-            sendMail(email,url, firstName, lastName)
-            
-            res.json({msg: "Please activate mail to start"})
-             
-            
+            sendMail(email, url, firstName, lastName)
+
+            // Stockez les informations de l'utilisateur dans la session
+            req.session.user = newUser;
+
+            res.json({ msg: "Please activate mail to start" })
+
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message })
         }
 
     },
-    activateEmail: async (req, res) =>{
+    activateEmail: async (req, res) => {
         try {
-            const {activation_token} = req.body
+            const { activation_token } = req.body
             const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET)
 
-            const {firstName, lastName, email, password} = user
+            const { firstName, lastName, email, password } = user
 
-            const check = await Users.findOne({email})
-            if(check) return res.status(400).json({msg: "This email already exists."})
+            const check = await Users.findOne({ email })
+            if (check) return res.status(400).json({ msg: "This email already exists." })
 
             const newUser = new Users({
                 firstName, lastName, email, password
             })
 
-            await newUser.save() 
+            await newUser.save()
 
-            res.json({msg: "Account has been activated"})
-
-        } catch (err) {
-            return res.status(500).json({msg: err.message})
-        }
-    },
-   
-   login1: async (req, res) => {
-    
-        try {
-
-            const {email, password} = req.body
-
-            const user = await Users.findOne({email})
-
-            if(!user) return res.status(400).json({msg: "This email does not exist."})
-
-            const isMatch = await bcrypt.compare(password, user.password)
-
-            if(!isMatch) return res.status(400).json({msg: "Password is incorrect."})
-
-            const refresh_token = createRefreshToken({id: user._id})
-
-            res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: '/api/user/refresh_token',
-                maxAge: 7*24*60*60*1000 // 7 days
-            })
-              if(user){
-            res.json({
-                _id: user._id,
-                firstName: user.firstName,
-                email: user.email,
-                role: user.role,
-                avatar: user.avatar,
-                token: createRefreshToken1(user._id),
-            });
-        } else{
-            res.status(400);
-            throw new Error("User not found")
-        }
+            res.json({ msg: "Account has been activated" })
 
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message })
         }
     },
-   login2: async (req, res) => {
+    login: async (req, res) => {
         try {
             const { email, password } = req.body;
-    
-            const user = await Users.findOne({ email });
-    
-            if (!user) {
-                return res.status(400).json({ msg: "This email does not exist." });
-            } 
-     
-            const isMatch = await bcrypt.compare(password, user.password);
-    
-            if (!isMatch) {
-                // Mot de passe incorrect
-                user.failedLoginAttempts += 1;
-                await user.save();
-    
-                if (user.failedLoginAttempts >= 5) {
-                    // Seuil de tentatives de connexion dépassé, verrouiller le compte
-                    user.accountLocked = true;
-                    await user.save();
-    
-                    return res.status(400).json({ msg: "Account is locked. Please contact support." });
-                }
-    
-                return res.status(400).json({ msg: "Password is incorrect." });
-            }
-    
-            // Réinitialiser le compteur de tentatives de connexion infructueuses en cas de succès
-            user.failedLoginAttempts = 0;
-            await user.save();
-    
-            // Le reste de la logique de connexion...
-        } catch (err) {
-            return res.status(500).json({ msg: err.message });
-        }
-    },
-  login: async (req, res) => {
-       try {
-                const { email, password } = req.body;
-                const user = await Users.findOne({ email });
-                // Vérifier si le compte est verrouillé
-                if(user.accountLocked && user.lockedUntil && new Date() < new Date(user.lockedUntil)) {
-                //return res.status(400).json({ msg: "Account is locked. Please contact support." });
-                return res.status(400).json(user.lockedUntil);}
-                const isMatch = await bcrypt.compare(password, user.password);
-                if(!isMatch) {
-                // Mot de passe incorrect
+               const user = await Users.findOne({ email });
+            if (user.accountLocked && user.lockedUntil && new Date() < new Date(user.lockedUntil)) {
+                return res.status(400).json({ msg: "Account is locked. Please contact support." });
+            }const isMatch = await bcrypt.compare(password, user.password);
+                   if (!isMatch) {
                 user.failedLoginAttempts += 1;
                 await user.save();
                 if (user.failedLoginAttempts >= 5) {
-                    // Seuil de tentatives de connexion dépassé, verrouiller le compte
                     user.accountLocked = true;
-                    user.lockedUntil = new Date();
-                    //user.lockedUntil.setHours(user.lockedUntil.getHours() + 24);
-                    user.lockedUntil = new Date(Date.now() + (24 * 60 * 60 * 1000));
-                    //user.lockedUntil = new Date() + (24 * 60 * 60 * 1000); // Verrouillage pour 24 heures
-                  
+                    user.lockedUntil = new Date(Date.now() + (24 * 60 * 60 * 1000)); 
                     await user.save();
-                   // return res.status(400).json({ msg: "Account is locked. Please contact support." });
-                   return res.status(400).json(user.lockedUntil)
-                }
-
-               
-                return res.status(400).json({ msg: "Password is incorrect." });
-            }
-    
-            // Réinitialiser le compteur de tentatives de connexion infructueuses en cas de succès
-            user.failedLoginAttempts = 0;
-            console.log(user.lockedUntil)
-            await user.save();
-    
-            // Le reste de la logique de connexion...
-    const refresh_token = createRefreshToken({id: user._id})
-
-            res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: '/api/user/refresh_token',
-                maxAge: 7*24*60*60*1000 // 7 days
-            })
-              if(user){
-            res.json({
-                _id: user._id,
-                firstName: user.firstName,
-                email: user.email,
-                role: user.role,
-                avatar: user.avatar,
-                token: createRefreshToken1(user._id),
-                lockedUntil : user.lockedUntil
-            });
-        } else{
-            res.status(400);  
-            throw new Error("User not found")
-        }
-        } catch (err) {
-            return res.status(500).json({ msg: err.message });
-        }
-        
+                    return res.status(400).json({ msg: "Account is locked. Please contact support." });}
+                    return res.status(400).json({ msg: "Password is incorrect." });}
+                    user.failedLoginAttempts = 0;
+                    await user.save();
+                    req.session.user = {
+                   _id: user._id,
+                   firstName: user.firstName,
+                   email: user.email,
+                   role: user.role,
+                   avatar: user.avatar,
+                   lockedUntil: user.lockedUntil};
+                   res.json({
+                   _id: user._id,
+                   firstName: user.firstName,
+                   email: user.email,
+                   role: user.role,
+                   avatar: user.avatar,
+                   token: createRefreshToken1(user._id),
+                   lockedUntil: user.lockedUntil});
+        }catch (err) {
+        return res.status(500).json({ msg: err.message });}
     },
-    
+    storeSession :(req,res) => {
+        if (req.session && req.body.userInfo) {
+            // Stockez les informations de l'utilisateur dans la session
+            req.session.userInfo = req.body.userInfo;
+            res.status(200).json({ message: 'Session stored successfully' });
+        } else {
+            res.status(400).json({ error: 'Failed to store session' });
+        }
+    },
     getAccessToken: (req, res) => {
         try {
-            const rf_token = req.cookies.refreshtoken
-            if(!rf_token) return res.status(400).json({msg: "Please login now!"})
+            // Vérifiez si l'utilisateur est connecté en vérifiant s'il y a une session active
+            if (!req.session.user) return res.status(400).json({ msg: "Please login now!" });
 
-            jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-                if(err){
-                    return res.status(400).json({msg: "Please login now!"})
-                }
-                const access_token = createAccessToken({id: user.id})
-                res.json({access_token})
-            })
+            // Générez un nouvel access token basé sur l'ID de l'utilisateur stocké dans la session
+            const access_token = createAccessToken({ id: req.session.user._id });
+
+            res.json({ access_token });
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message });
         }
     },
+    // Les autres méthodes restent inchangées...
     forgotPassword: async (req, res) => {
         try {
             const {email} = req.body
@@ -463,27 +365,25 @@ const userController = {
 
 
 
-}
+
+};
 
 const createActivationToken = (payload) => {
-   
-    return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET,{expiresIn :'5m'})
+    return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, { expiresIn: '5m' });
 } 
 
 const createAccessToken = (payload) => {
-    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,{expiresIn :'15m'})
+    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
-
 const createRefreshToken1= (id) => {
     return jwt.sign({id}, process.env.REFRESH_TOKEN_SECRET,{expiresIn :'7d'});
 }
 const createRefreshToken= (payload) => {
     return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET)
 }
-
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
 
-module.exports = userController
+module.exports = userController;

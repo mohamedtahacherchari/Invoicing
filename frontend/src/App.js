@@ -11,8 +11,7 @@ import Chatpage from './pages/Chat/Chatpage';
 import ResetPWD from './pages/User/ResetPWD';
 import ResetPassword from './pages/User/ResetPassword';
 import GoogleOneTapLogin from './pages/User/GoogleOneTapLogin';
-import EmailActivation from './pages/User/EmailActivation';
-
+import EmailActivation from './pages/User/EmailActivation'
 function App() {
 	const dispatch = useDispatch()  
 	const token = useSelector(state => state.token)
@@ -51,7 +50,7 @@ const ResetPasswordRoute = () => {
 		getUser()
 		}
 	},[token, dispatch])
-
+	
 	return     (
 				
 		<Routes>
@@ -61,7 +60,7 @@ const ResetPasswordRoute = () => {
 */}		<Route path="/inv/forgotpassword" element={<ForgotPassword/>} />
 		<Route path='/inv/chats' element={<Chatpage/>} />
 		<Route path='/inv' element={<GoogleOneTapLogin/>}/>
-		<Route path="/alia/inv/:activation_token" element={<EmailActivation/>} />
+		<Route path="/active/:activation_token" element={<EmailActivation/>} />
 
 	  </Routes>
 				);

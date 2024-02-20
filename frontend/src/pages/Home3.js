@@ -36,7 +36,6 @@ import DevisToPrint3 from './Zervant/DevisToPrint3';
 import DevisToPrint4 from './Zervant/DevisToPrint4';
 import DevisToPrint5 from './Zervant/DevisToPrint5';
 import Dashboard from './Zervant/Dashboard';
-import EmailActivation from './User/EmailActivation';
 
   const drawerWidth = 270;
 
@@ -146,7 +145,6 @@ const Home = (props) => {
                     <Route path="/inv/printAvecRemiseTabPourcent2/:id" element={<DevisToPrint4/>} />
                     <Route path="/inv/printAvecRemiseTabDevise2/:id" element={<DevisToPrint5/>} />
                     <Route path="/inv/upload" element={<UploadForm/>} />
-
                     </Routes>
                     </Box>
                      </ThemeProvider>)}

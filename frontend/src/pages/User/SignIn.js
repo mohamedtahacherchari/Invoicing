@@ -24,6 +24,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
 import GoogleOneTapLogin from './GoogleOneTapLogin';
 import { Routes, Route } from 'react-router-dom'
+import {fetchUser, dispatchGetUser } from '../../redux/actions/authAction';
+
 const theme = createTheme();
 
 
@@ -51,6 +53,7 @@ const InitialState = {
 
 export default function SignIn() {
     const [user, setUser] = useState(InitialState);
+    const auth = useSelector(state => state.auth)
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
      const {email, password} = user
@@ -71,8 +74,55 @@ export default function SignIn() {
 		e.preventDefault()
 	} 
 
-
-	const handleSubmit = async(event) => {
+	
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		try {
+			const res = await axios.post('/api/user/login', { email, password }, {
+				headers: { Authorization: token }
+			});
+	
+			setUser({ ...user, err: '', success: res.data.msg });
+			localStorage.setItem('firstLogin', true)
+           dispatch(dispatchLogin())
+			console.log(res.data);
+	
+			// Stockage des informations de l'utilisateur dans la session côté serveur
+			const storeSessionRes = await axios.post('/api/user/storeSession', { userInfo: res.data });
+			if (storeSessionRes.data.error) {
+				// Si la session n'est pas stockée avec succès, affichez un message d'erreur et quittez la fonction
+				throw new Error(storeSessionRes.data.error);
+			}
+	
+			toast.success('Bienvenue', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+			localStorage.setItem("userInfo", JSON.stringify(res));
+			navigate('/inv/accueil');
+		} catch (err) {
+			setUser({ ...user, err: '', success: '' });
+			//localStorage.setItem('firstLogin', true)
+			// dispatch(dispatchLogin())
+	
+			toast.error(err.message || "error logging in", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
+	};
+	
+	const handleSubmit2= async(event) => {
 
 		event.preventDefault();
 		try {
@@ -120,6 +170,30 @@ export default function SignIn() {
 		}
 
 	};
+	useEffect(() => {
+
+		const firstLogin = localStorage.getItem('firstLogin')
+		if(firstLogin){
+			const getToken = async () => {
+			const res = await axios.post('/api/user/refresh_token', null)
+			dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
+		}
+		getToken()
+		}
+	},[auth.isLogged, dispatch])
+
+	useEffect(() => {
+		if(token){
+		const getUser = () => {
+			dispatch(dispatchLogin())
+
+			return fetchUser(token).then(res => {
+			dispatch(dispatchGetUser(res))
+			})
+		}
+		getUser()
+		}
+	},[token, dispatch])
 
 	return (
 		<div>
@@ -164,7 +238,7 @@ export default function SignIn() {
 				<ToastContainer />
 
 				
-				<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 5 }}>
+				<Box component="form" noValidate onSubmit={handleSubmit2} sx={{ mt: 5 }}>
 					
 					<TextField
 						margin="normal"
@@ -213,9 +287,9 @@ export default function SignIn() {
 					</Button>
 					<Grid container>
 					<Grid item xs>
-					<Link href="/inv/forgotpassword" variant="body2">
+					{/*<Link href="/inv/forgotpassword" variant="body2">
 						Oublier mot de passe?
-					</Link>
+				</Link>*/}
 					</Grid>
 					<Grid item>
 					<Link href="/inv/register" variant="body2">
@@ -224,9 +298,9 @@ export default function SignIn() {
 					</Grid>
 					
 				</Grid>
-				<Grid item sx={{mt: 5, alignContent: 'center'}}>
+			{/*	<Grid item sx={{mt: 5, alignContent: 'center'}}>
 						<GoogleOneTapLogin/>
-					</Grid>
+			</Grid>*/}
 				<Copyright sx={{ mt: 5 }} />
 				</Box>
 			</Box>

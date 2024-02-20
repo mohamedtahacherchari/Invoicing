@@ -5,10 +5,53 @@ const authAdmin = require('../middleware/authAdmin')
 const Users = require("../models/userModel");
 //const router = require("express").Router();
 //const bcrypt = require("bcrypt");
+const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+// Middleware pour gérer les tentatives de connexion infructueuses
+const handleFailedLoginAttempts = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+      // Récupérer l'utilisateur depuis la base de données
+      const user = await Users.findOne({ email });
+
+      if (!user) {
+          // Utilisateur non trouvé, gérer l'erreur ici
+          return res.status(401).json({ msg: "Invalid credentials." });
+      }
+  
+      if (user.accountLocked) {
+          // Compte verrouillé, renvoyer un message d'erreur approprié
+          return res.status(401).json({ msg: "Account locked. Please contact support." });
+      }
+
+      // Incrémenter le compteur de tentatives de connexion infructueuses
+      user.failedLoginAttempts += 1;
+
+      // Vérifier si le seuil de tentatives de connexion infructueuses est dépassé
+      if (user.failedLoginAttempts >= MAX_FAILED_LOGIN_ATTEMPTS) {
+          // Verrouiller le compte
+          user.accountLocked = true;
+          // Réinitialiser le compteur de tentatives de connexion infructueuses
+          user.failedLoginAttempts = 0;
+          // Enregistrer les modifications dans la base de données
+          await user.save();
+          // Renvoyer un message d'erreur approprié
+          return res.status(401).json({ msg: "Account locked due to too many failed login attempts. Please try again later or contact support." });
+      } 
+
+      // Si nous sommes ici, les tentatives de connexion ne sont pas trop nombreuses, donc passer au middleware suivant
+      next();
+  } catch (error) {
+      // Gérer les erreurs ici
+      console.error(error);
+      res.status(500).json({ msg: "Server error." });
+  }
+};
 
 router.post('/register', userController.register)
 router.post('/activation', userController.activateEmail)
-router.post('/login', userController.login)
+router.post('/login',handleFailedLoginAttempts,  userController.login)
+//router.post('/storeSession', userController.storeSession)
 router.post('/refresh_token', userController.getAccessToken)
 router.post('/forgot', userController.forgotPassword)
 router.post('/reset', auth, userController.resetPassword)
@@ -17,7 +60,7 @@ router.get('/infor/:id', auth, userController.getUserInformation)
 router.get('/all_infor', auth, authAdmin, userController.getUsersAllInfor)
 router.get('/logout', userController.logout)
 router.patch('/update', auth, userController.updateUser)
-router.patch('/update', auth, userController.updateUser)
+router.patch('/update/:id', auth, userController.updateUserAccountLocked)
 router.patch('/updateAvatar', auth, userController.updateAvatar)
 router.patch('/update_role/:id', auth, authAdmin, userController.updateUsersRole)
 router.delete('/delete/:id', auth, authAdmin, userController.deleteUser)

@@ -13,10 +13,11 @@ const devisRoutes = require("./routes/zervant/devisRoutes");
 const candidatRoutes = require("./routes/Candidat/candidatRoutes");
 const  path = require('path')
 const multer = require('multer');
-
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 //const upload = require('./routes/zervant/upload');
 
-
+// Configurez MongoDBStore pour stocker les sessions dans MongoDB
 
 
 const colors = require('colors')
@@ -25,12 +26,32 @@ const { errorHandler } = require('./middleware/errorMiddleware')
 const port = process.env.PORT || 5000;
   
 const app = express()
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URL,
+  collection: 'sessions',
+});
+// Gérez les sessions dans l'application Express 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: store,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // Durée de vie de la session en millisecondes (1 jour)
+    httpOnly: true, // Empêche l'accès au cookie via JavaScript
+  },
+}));
 app.use(express.json({limit: '10mb'}))
 app.use(express.urlencoded({ extended: false }))
 
 //app.use(cors({}))
 app.use(cors());
-
+// Ajoutez des journaux pour vérifier si la session est initialisée avec succès
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session Data:', req.session);
+  next();
+});
 app.use(cookieParser())
 //app.use(fileUpload({
   //  useTempFiles: true

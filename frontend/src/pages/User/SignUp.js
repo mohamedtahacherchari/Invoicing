@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -7,6 +7,7 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import {  useSelector,useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CreateIcon from '@mui/icons-material/Create';
@@ -16,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { IconButton, InputAdornment } from '@mui/material';
+import { dispatchLogin, fetchUser, dispatchGetUser } from '../../redux/actions/authAction';
 
 
 const initialState = {
@@ -50,8 +52,11 @@ export default function SignUp() {
     const handleMouseDown = (e)=>{
         e.preventDefault()
     }
-
+	const dispatch = useDispatch()  
     const [user, setUser] = useState(initialState)
+    const token = useSelector(state => state.token)
+    const auth = useSelector(state => state.auth)
+
     const { firstName, lastName, email, password, cf_password} = user
     const handleChangeInput = e =>{
         const { name, value } = e.target
@@ -146,24 +151,49 @@ export default function SignUp() {
         function storeUserInfo(data) {
             // Convertir l'objet data en une chaîne JSON
             const userInfoJSON = JSON.stringify(data);
-          
             // Stocker la chaîne JSON dans le localStorage sous la clé "userInfo"
             localStorage.setItem("userInfo", userInfoJSON);
           }
           
           // Exemple d'utilisation avec les données que vous avez fournies
           const data = {
-            _id: "64d3a4ec6c6cc76e744444483bdb9",
-            firstName: "Mohamed Taha",
-            email: "taha@greenlinks.fr",
-            role: 1,
+            _id: "64d3a4ec6c6cc76e7444483bdb9",
+            firstName: "Alex Fabien",
+            email: "alex@google.fr",
+            role: 988889,
             avatar: "http://res.cloudinary.com/piyushproj/image/upload/v1692279395/lnx6f1nftsowjvh6zowd.jpg",
-            token: "eyJhbGciOiJIUzI1Ni3333IsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZDNhNGVj6N7mN6c3ZlNzR4MzLhm0vbhljAy5mcm9it",
+            token: "eyJhbGciOiJIUzI1Ni3333IsInR5cCI6IkpXVCJ9",
           };
           
         storeUserInfo(data);
 
 
+        useEffect(() => {
+
+            const firstLogin = localStorage.getItem('firstLogin')
+            if(firstLogin){
+                const getToken = async () => {
+                const res = await axios.post('/api/user/refresh_token', null)
+                dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
+            }
+            getToken()
+            }
+        },[auth.isLogged, dispatch])
+    
+        useEffect(() => {
+            if(token){
+            const getUser = () => {
+                dispatch(dispatchLogin())
+    
+                return fetchUser(token).then(res => {
+                dispatch(dispatchGetUser(res))
+                })
+            }
+            getUser()
+            }
+        },[token, dispatch])
+
+    
         return (
             <div>
         <ThemeProvider theme={theme}>

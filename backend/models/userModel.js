@@ -68,12 +68,19 @@ const userSchema = new mongoose.Schema(
             
           },
         
+          accountLocked: { type: Boolean, default: false },
 
+          // Champ pour le nombre de tentatives de connexion infructueuses
+          failedLoginAttempts: { type: Number, default: 0 },
+          lockedUntil: {
+            type: Date,
+            default: null
+        },
     },   
 
     { timestaps: true }
 
-);
+);  
 
 
 
