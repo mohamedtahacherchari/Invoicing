@@ -1,6 +1,24 @@
-const fs = require('fs');
+import type { NextFunction, Request, Response } from 'express'
 
-module.exports = async function(req, res, next) {
+interface UploadedImageFile {
+    size: number
+    mimetype: string
+    tempFilePath: string
+}
+
+interface UploadFiles {
+    file: UploadedImageFile
+}
+
+type UploadRequest = Request & { files?: UploadFiles }
+
+const fs: typeof import('fs') = require('fs');
+
+module.exports = async function(
+    req: UploadRequest,
+    res: Response,
+    next: NextFunction,
+): Promise<Response | void> {
     try {
         
         if(!req.files || Object.keys(req.files).length === 0)
@@ -21,11 +39,11 @@ module.exports = async function(req, res, next) {
 
         next()
     } catch (err) {
-        return res.status(500).json({msg: err.message})
+        return res.status(500).json({msg: (err as Error).message})
     }
 }
 
-const removeTmp = (path) => {
+const removeTmp = (path: string): void => {
     fs.unlink(path, err => {
         if(err) throw err
     })
